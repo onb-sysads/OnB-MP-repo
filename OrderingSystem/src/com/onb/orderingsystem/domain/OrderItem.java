@@ -46,4 +46,12 @@ public class OrderItem {
 		BigDecimal bd = new BigDecimal(this.getOrderItemQuantity());
 		return this.orderItemProduct.getProductPrice().multiply(bd);
 	}
+
+	public boolean checkIfAvailable() throws ProductException {
+		if(this.orderItemProduct.getProductQuantity() >= this.orderItemQuantity)
+		
+			return true;
+		throw new ProductException("Ordered Qty is greater than the supply ");
+	}
+
 }
