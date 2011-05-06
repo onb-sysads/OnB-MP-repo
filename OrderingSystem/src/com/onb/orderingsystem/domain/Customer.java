@@ -3,20 +3,20 @@ package com.onb.orderingsystem.domain;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.onb.orderingsystem.utils.Enumerators.OrderStatus;
+
 public class Customer {
-	private BigDecimal custID;
+	private int custID;
 	private String custFirstName;
 	private String custLastName;
 	private BigDecimal custCreditLimit;
 	private List<Order> custOrder;
 	
-	public Customer(BigDecimal custID, String custFirstName, String custLastName,
-			BigDecimal custCreditLimit, List<Order> custOrder) {
+	public Customer(int custID, String custFirstName, String custLastName, List<Order> custOrder) {
 		super();
 		this.custID = custID;
 		this.custFirstName = custFirstName;
 		this.custLastName = custLastName;
-		this.custCreditLimit = custCreditLimit;
 		this.custOrder = custOrder;
 	}
 
@@ -24,11 +24,11 @@ public class Customer {
 		super();
 	}
 
-	public BigDecimal getCustID() {
+	public int getCustID() {
 		return custID;
 	}
 
-	public void setCustID(BigDecimal custID) {
+	public void setCustID(int custID) {
 		this.custID = custID;
 	}
 
@@ -52,15 +52,35 @@ public class Customer {
 		return custCreditLimit;
 	}
 
-	public void setCustCreditLimit(BigDecimal custCreditLimit) {
-		this.custCreditLimit = custCreditLimit;
-	}
-
 	public List<Order> getCustOrder() {
 		return custOrder;
 	}
 
 	public void setCustOrder(List<Order> custOrder) {
 		this.custOrder = custOrder;
+	}
+
+	public final BigDecimal computeTotalPaidOrders() {
+		BigDecimal totalPaidOrders = new BigDecimal(0.0);
+		for(Order order : this.custOrder){
+			if(order.getOrderStatus() == OrderStatus.PAID)
+				totalPaidOrders = totalPaidOrders.add(order.computeOrderTotalPrice());
+		}
+		return totalPaidOrders;
+	}
+
+	public final BigDecimal computeCreditLimit() {
+		BigDecimal totalPaidOrders = this.computeTotalPaidOrders();
+		if(totalPaidOrders.compareTo(new BigDecimal(100000.00)) == -1)
+			return this.custCreditLimit = new BigDecimal(10000.00);
+		else if((totalPaidOrders.compareTo(new BigDecimal(100000.00)) == 1) && 
+					(totalPaidOrders.compareTo(new BigDecimal(500000.00)) == -1))
+			return this.custCreditLimit = new BigDecimal(30000.00);
+		else if((totalPaidOrders.compareTo(new BigDecimal(500000.00)) == 1) && 
+				(totalPaidOrders.compareTo(new BigDecimal(1000000.00)) == -1))
+			return this.custCreditLimit = new BigDecimal(75000.00);
+		else if((totalPaidOrders.compareTo(new BigDecimal(1000000.00)) == 1))
+			return this.custCreditLimit = new BigDecimal(150000.00);
+		else return null;
 	}
 }
