@@ -1,28 +1,53 @@
 package com.onb.orderingsystem.domain;
 
 public class Product {
-	private int prodID;
-	private int prodQty;
-	private String prodName;
-	private int prodUnitPrice;
+	private int productID;
+	private String productName;
+	private int productQuantity;
+	private int productPrice;
 	
-	public Product(int id, int qty, String name, int price){
-		this.prodID = id;
-		this.prodName = name;
-		this.prodQty = qty;
-		this.prodUnitPrice = price;
+	public Product(int productID, String productName, int productQuantity,
+			int productPrice) {
+		super();
+		this.productID = productID;
+		this.productName = productName;
+		this.productQuantity = productQuantity;
+		this.productPrice = productPrice;
 	}
-	
-	public int getProdID() {
-		return prodID;
+
+	public Product() {
+		super();
 	}
-	public int getProdQty() {
-		return prodQty;
+
+	public int getProductID() {
+		return productID;
 	}
-	public String getProdName() {
-		return prodName;
+
+	public void setProductID(int productID) {
+		this.productID = productID;
 	}
-	public int getProdUnitPrice() {
-		return prodUnitPrice;
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public int getProductQuantity() {
+		return productQuantity;
+	}
+
+	public void setProductQty(int productQuantity) {
+		this.productQuantity = productQuantity;
+	}
+
+	public int getProductPrice() {
+		return productPrice;
+	}
+
+	public void setProductPrice(int productPrice) {
+		this.productPrice = productPrice;
 	}
 }

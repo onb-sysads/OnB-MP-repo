@@ -2,46 +2,45 @@ package com.onb.orderingsystem.domain;
 
 public class OrderItem {
 	private int orderItemID;
-	private String orderItemName;
-	private int orderItemQty;
-	private int orderItemPrice;
-	
-	private Product product;
-	
-	public OrderItem(int id, String prod, int qty, int price){
-		this.orderItemID = id;
-		this.orderItemName = prod;
-		this.orderItemQty = qty;
-		this.orderItemPrice = price;
+	private Product orderItemProduct;
+	private int orderItemQuantity;
+
+	public OrderItem(int orderItemID, Product orderItemProduct, int orderItemQuantity) {
+		super();
+		this.orderItemID = orderItemID;
+		this.orderItemProduct = orderItemProduct;
+		this.orderItemQuantity = orderItemQuantity;
+	}
+
+	public OrderItem() {
+		super();
 	}
 
 	public int getOrderItemID() {
 		return orderItemID;
 	}
 
-	public String getOrderItemName() {
-		return orderItemName;
+	public void setOrderItemID(int orderItemID) {
+		this.orderItemID = orderItemID;
 	}
 
-	public int getOrderItemQty() {
-		return orderItemQty;
+	public Product getOrderItemProduct() {
+		return orderItemProduct;
 	}
 
-	public int getOrderItemPrice() {
-		return orderItemPrice;
+	public void setOrderItemProduct(Product orderItemProduct) {
+		this.orderItemProduct = orderItemProduct;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public int getOrderItemQuantity() {
+		return orderItemQuantity;
 	}
 
-	public Product getProduct() {
-		return product;
+	public void setOrderItemQty(int orderItemQuantty) {
+		this.orderItemQuantity = orderItemQuantty;
 	}
-	
-	public int getTotal() {
-		this.orderItemPrice = product.getProdUnitPrice();
-		return this.orderItemPrice * this.getOrderItemQty();
+
+	public int computeTotalPrice() {
+		return this.getOrderItemQuantity() * this.orderItemProduct.getProductPrice();
 	}
 }
-

@@ -1,41 +1,65 @@
 package com.onb.orderingsystem.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class Customer {
 	private int custID;
-	private int custCreditLimit;
 	private String custFirstName;
 	private String custLastName;
-	private Set<Order> custOrder;
+	private int custCreditLimit;
+	private List<Order> custOrder;
 	
-	public Customer(int id, int limit, String fname, String lname,Set<Order> order){
-		this.custID = id;
-		this.custCreditLimit = limit;
-		this.custFirstName = fname;
-		this.custLastName = lname;
-		this.custOrder = new HashSet<Order>();
+	public Customer(int custID, String custFirstName, String custLastName,
+			int custCreditLimit, List<Order> custOrder) {
+		super();
+		this.custID = custID;
+		this.custFirstName = custFirstName;
+		this.custLastName = custLastName;
+		this.custCreditLimit = custCreditLimit;
+		this.custOrder = custOrder;
 	}
-	
+
+	public Customer() {
+		super();
+	}
+
 	public int getCustID() {
 		return custID;
 	}
-	
-	public int getCustCreditLimit() {
-		return custCreditLimit;
+
+	public void setCustID(int custID) {
+		this.custID = custID;
 	}
 
 	public String getCustFirstName() {
 		return custFirstName;
 	}
-	
+
+	public void setCustFirstName(String custFirstName) {
+		this.custFirstName = custFirstName;
+	}
+
 	public String getCustLastName() {
 		return custLastName;
 	}
-	
-	public Set<Order> getCustOrder() {
+
+	public void setCustLastName(String custLastName) {
+		this.custLastName = custLastName;
+	}
+
+	public int getCustCreditLimit() {
+		return custCreditLimit;
+	}
+
+	public void setCustCreditLimit(int custCreditLimit) {
+		this.custCreditLimit = custCreditLimit;
+	}
+
+	public List<Order> getCustOrder() {
 		return custOrder;
 	}
-}
 
+	public void setCustOrder(List<Order> custOrder) {
+		this.custOrder = custOrder;
+	}
+}
