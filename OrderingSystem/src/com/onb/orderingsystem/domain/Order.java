@@ -1,5 +1,6 @@
 package com.onb.orderingsystem.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Order {
@@ -32,10 +33,10 @@ public class Order {
 		this.orderList = orderList;
 	}
 
-	public int computeOrderTotalPrice() {
-		int totalOrderPrice = 0;
+	public BigDecimal computeOrderTotalPrice() {
+		BigDecimal totalOrderPrice = new BigDecimal(0.0);
 		for(OrderItem orderItem : orderList){
-			totalOrderPrice += orderItem.computeTotalPrice();
+			totalOrderPrice = totalOrderPrice.add(orderItem.computeTotalPrice());
 		}
 		return totalOrderPrice;
 	}

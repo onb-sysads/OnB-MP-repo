@@ -1,13 +1,15 @@
 package com.onb.orderingsystem.domain;
 
+import java.math.BigDecimal;
+
 public class Product {
 	private int productID;
 	private String productName;
 	private int productQuantity;
-	private int productPrice;
+	private BigDecimal productPrice;
 	
 	public Product(int productID, String productName, int productQuantity,
-			int productPrice) {
+			BigDecimal productPrice) {
 		super();
 		this.productID = productID;
 		this.productName = productName;
@@ -43,11 +45,11 @@ public class Product {
 		this.productQuantity = productQuantity;
 	}
 
-	public int getProductPrice() {
+	public BigDecimal getProductPrice() {
 		return productPrice;
 	}
 
-	public void setProductPrice(int productPrice) {
+	public void setProductPrice(BigDecimal productPrice) {
 		this.productPrice = productPrice;
 	}
 }

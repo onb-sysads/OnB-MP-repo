@@ -1,5 +1,7 @@
 package com.onb.orderingsystem.domain;
 
+import java.math.BigDecimal;
+
 public class OrderItem {
 	private int orderItemID;
 	private Product orderItemProduct;
@@ -40,7 +42,8 @@ public class OrderItem {
 		this.orderItemQuantity = orderItemQuantty;
 	}
 
-	public int computeTotalPrice() {
-		return this.getOrderItemQuantity() * this.orderItemProduct.getProductPrice();
+	public BigDecimal computeTotalPrice() {
+		BigDecimal bd = new BigDecimal(this.getOrderItemQuantity());
+		return this.orderItemProduct.getProductPrice().multiply(bd);
 	}
 }

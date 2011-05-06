@@ -1,16 +1,17 @@
 package com.onb.orderingsystem.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Customer {
-	private int custID;
+	private BigDecimal custID;
 	private String custFirstName;
 	private String custLastName;
-	private int custCreditLimit;
+	private BigDecimal custCreditLimit;
 	private List<Order> custOrder;
 	
-	public Customer(int custID, String custFirstName, String custLastName,
-			int custCreditLimit, List<Order> custOrder) {
+	public Customer(BigDecimal custID, String custFirstName, String custLastName,
+			BigDecimal custCreditLimit, List<Order> custOrder) {
 		super();
 		this.custID = custID;
 		this.custFirstName = custFirstName;
@@ -23,11 +24,11 @@ public class Customer {
 		super();
 	}
 
-	public int getCustID() {
+	public BigDecimal getCustID() {
 		return custID;
 	}
 
-	public void setCustID(int custID) {
+	public void setCustID(BigDecimal custID) {
 		this.custID = custID;
 	}
 
@@ -47,11 +48,11 @@ public class Customer {
 		this.custLastName = custLastName;
 	}
 
-	public int getCustCreditLimit() {
+	public BigDecimal getCustCreditLimit() {
 		return custCreditLimit;
 	}
 
-	public void setCustCreditLimit(int custCreditLimit) {
+	public void setCustCreditLimit(BigDecimal custCreditLimit) {
 		this.custCreditLimit = custCreditLimit;
 	}
 
