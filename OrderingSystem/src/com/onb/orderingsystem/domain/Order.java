@@ -1,19 +1,27 @@
 package com.onb.orderingsystem.domain;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
-import com.onb.orderingsystem.utils.Enumerators.*;
+
+import com.onb.orderingsystem.utils.Enumerators.OrderStatus;
 
 public class Order {
+	private final String DATE_FORMAT = "yyyy/MM/dd";
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+	private final Calendar calendar = Calendar.getInstance();
+	private String orderDate;
 	private int orderID;
 	private List<OrderItem> orderList;
 	private OrderStatus orderStatus = OrderStatus.UNPAID;
 	
-	public Order(int orderID, List<OrderItem> orderList, OrderStatus orderStatus) {
+	public Order(int orderID, List<OrderItem> orderList, OrderStatus orderStatus, String orderDate) {
 		super();
 		this.orderID = orderID;
 		this.orderList = orderList;
 		this.orderStatus = orderStatus;
+		this.orderDate = dateFormat.format(calendar.getTime()).toString();
 	}
 
 	public Order() {
@@ -42,6 +50,10 @@ public class Order {
 
 	public final void setOrderStatus(OrderStatus orderStatus) {
 		this.orderStatus = orderStatus;
+	}
+	
+	public String getOrderDate() {
+		return orderDate;
 	}
 
 	public final BigDecimal computeOrderTotalPrice() {
