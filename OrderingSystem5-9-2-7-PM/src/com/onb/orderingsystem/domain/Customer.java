@@ -1,6 +1,7 @@
 package com.onb.orderingsystem.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.onb.orderingsystem.utils.Enumerators.OrderStatus;
@@ -9,14 +10,16 @@ public class Customer {
 	private int custID;
 	private String custFirstName;
 	private String custLastName;
-	private BigDecimal custCreditLimit;
-	private List<Order> custOrder;
+	private BigDecimal custCreditLimit = new BigDecimal(10000.00);
+	private List<Order> custOrder = new ArrayList<Order>();
 	
-	public Customer(int custID, String custFirstName, String custLastName, List<Order> custOrder) {
+	public Customer(int custID, String custFirstName, String custLastName,
+			/*BigDecimal custCreditLimit,*/ List<Order> custOrder) {
 		super();
 		this.custID = custID;
 		this.custFirstName = custFirstName;
 		this.custLastName = custLastName;
+		/*this.custCreditLimit = custCreditLimit;*/
 		this.custOrder = custOrder;
 	}
 
@@ -59,6 +62,11 @@ public class Customer {
 	public void setCustOrder(List<Order> custOrder) {
 		this.custOrder = custOrder;
 	}
+	
+	//add order to the list of orders of a customer
+	public void addOrder(Order order) {
+		this.custOrder.add(order);
+	}
 
 	public final BigDecimal computeTotalPaidOrders() {
 		BigDecimal totalPaidOrders = new BigDecimal(0.0);
@@ -92,7 +100,7 @@ public class Customer {
 			return this.custCreditLimit = new BigDecimal(150000.00);
 		else return null;
 	}
-
+	
 	public final BigDecimal checkCreditLimit() throws Exception{
 		BigDecimal totalUnpaidOrders = computeTotalUnpaidOrders();
 		BigDecimal custCreditLimit = computeCreditLimit();
