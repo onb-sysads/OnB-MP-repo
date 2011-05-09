@@ -2,6 +2,7 @@ package com.onb.orderingsystem.domain;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class Order {
 	private final Calendar calendar = Calendar.getInstance();
 	private String orderDate;
 	private int orderID;
-	private List<OrderItem> orderList;
+	private List<OrderItem> orderList = new ArrayList<OrderItem>();
 	private OrderStatus orderStatus = OrderStatus.UNPAID;
 	
 	public Order(int orderID, List<OrderItem> orderList, OrderStatus orderStatus, String orderDate) {
@@ -66,8 +67,12 @@ public class Order {
 	
 		public void addOrderItem(OrderItem orderItem) throws ProductException {
 		if(orderItem.checkIfAvailable())
+			
 				this.orderList.add(orderItem);
+		
+
 	}
 
-	
+
+
 }

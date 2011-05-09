@@ -2,6 +2,8 @@ package com.onb.orderingsystem.domain;
 
 import java.math.BigDecimal;
 
+
+
 public class OrderItem {
 	private int orderItemID;
 	private Product orderItemProduct;
@@ -46,7 +48,7 @@ public class OrderItem {
 		BigDecimal bd = new BigDecimal(this.getOrderItemQuantity());
 		return this.orderItemProduct.getProductPrice().multiply(bd);
 	}
-
+	
 	public boolean checkIfAvailable() throws ProductException {
 		if(this.orderItemProduct.getProductQuantity() >= this.orderItemQuantity)
 		
@@ -54,4 +56,7 @@ public class OrderItem {
 		throw new ProductException("Ordered Qty is greater than the supply ");
 	}
 
+	
+	
+	
 }

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class CustomerTest {
 	
-	@Test
+/*	@Test
 	public void TestForTotalOrderPrice(){
 		Product product = new Product(1, 5, "Apple", 10);
 		Set<OrderItem> totalItems = new HashSet<OrderItem>();
@@ -18,4 +18,5 @@ public class CustomerTest {
 		finalOrder.add(order);
 		Customer cust = new Customer(1, 10000, order.getOrderFCustName(), order.getOrderLCustName(), finalOrder);
 	}
+*/
 }
