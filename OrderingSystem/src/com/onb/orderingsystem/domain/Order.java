@@ -66,27 +66,8 @@ public class Order {
 	
 		public void addOrderItem(OrderItem orderItem) throws ProductException {
 		if(orderItem.checkIfAvailable())
-			if(isItemInList(orderItem))
 				this.orderList.add(orderItem);
-			else this.orderList.add(orderItem);
-
 	}
 
-	private boolean isItemInList(OrderItem orderItem) {
-		int previousQty;
-		int addedQty;
-		for (OrderItem item : orderList) {
-			if(new Integer(item.getOrderItemProduct().getProductID()).equals(new Integer(orderItem.getOrderItemProduct().getProductID()))){
-				previousQty = item.getOrderItemQuantity();
-				addedQty = orderItem.getOrderItemQuantity();
-				orderItem.setOrderItemQty(previousQty+addedQty);
-				orderList.remove(item);
-				return true;
-			}
-		}
-		return false;
-	}
 	
-
-
 }
