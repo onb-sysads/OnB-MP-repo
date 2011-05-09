@@ -69,6 +69,15 @@ public class Customer {
 		return totalPaidOrders;
 	}
 
+	public Object computeTotalUnpaidOrders() {
+		BigDecimal totalUnpaidOrders = new BigDecimal(0.0);
+		for(Order order : this.custOrder){
+			if(order.getOrderStatus() == OrderStatus.UNPAID)
+				totalUnpaidOrders = totalUnpaidOrders.add(order.computeOrderTotalPrice());
+		}
+		return totalUnpaidOrders;
+	}
+	
 	public final BigDecimal computeCreditLimit() {
 		BigDecimal totalPaidOrders = this.computeTotalPaidOrders();
 		if(totalPaidOrders.compareTo(new BigDecimal(100000.00)) == -1)
