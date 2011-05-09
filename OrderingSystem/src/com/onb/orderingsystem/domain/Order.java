@@ -10,14 +10,16 @@ import com.onb.orderingsystem.utils.Enumerators.OrderStatus;
 
 public class Order {
 	private final String DATE_FORMAT = "yyyy/MM/dd";
-	private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat(
+			DATE_FORMAT);
 	private final Calendar calendar = Calendar.getInstance();
 	private String orderDate;
 	private int orderID;
 	private List<OrderItem> orderList = new ArrayList<OrderItem>();
 	private OrderStatus orderStatus = OrderStatus.UNPAID;
-	
-	public Order(int orderID, List<OrderItem> orderList, OrderStatus orderStatus, String orderDate) {
+
+	public Order(int orderID, List<OrderItem> orderList,
+			OrderStatus orderStatus, String orderDate) {
 		super();
 		this.orderID = orderID;
 		this.orderList = orderList;
@@ -44,7 +46,7 @@ public class Order {
 	public void setOrderList(List<OrderItem> orderList) {
 		this.orderList = orderList;
 	}
-	
+
 	public OrderStatus getOrderStatus() {
 		return orderStatus;
 	}
@@ -52,27 +54,23 @@ public class Order {
 	public final void setOrderStatus(OrderStatus orderStatus) {
 		this.orderStatus = orderStatus;
 	}
-	
+
 	public String getOrderDate() {
 		return orderDate;
 	}
 
 	public final BigDecimal computeOrderTotalPrice() {
 		BigDecimal totalOrderPrice = new BigDecimal(0.0);
-		for(OrderItem orderItem : orderList){
-			totalOrderPrice = totalOrderPrice.add(orderItem.computeTotalPrice());
+		for (OrderItem orderItem : orderList) {
+			totalOrderPrice = totalOrderPrice
+					.add(orderItem.computeTotalPrice());
 		}
 		return totalOrderPrice;
 	}
-	
-		public void addOrderItem(OrderItem orderItem) throws ProductException {
-		if(orderItem.checkIfAvailable())
-			
-				this.orderList.add(orderItem);
-		
 
+	public void addOrderItem(OrderItem orderItem) throws ProductException {
+		if (orderItem.checkIfAvailable())
+			this.orderList.add(orderItem);
 	}
-
-
 
 }

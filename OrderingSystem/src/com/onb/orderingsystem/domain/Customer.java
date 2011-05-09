@@ -69,7 +69,7 @@ public class Customer {
 		return totalPaidOrders;
 	}
 
-	public Object computeTotalUnpaidOrders() {
+	public BigDecimal computeTotalUnpaidOrders() {
 		BigDecimal totalUnpaidOrders = new BigDecimal(0.0);
 		for(Order order : this.custOrder){
 			if(order.getOrderStatus() == OrderStatus.UNPAID)
@@ -91,5 +91,14 @@ public class Customer {
 		else if((totalPaidOrders.compareTo(new BigDecimal(1000000.00)) == 1))
 			return this.custCreditLimit = new BigDecimal(150000.00);
 		else return null;
+	}
+
+	public final BigDecimal checkCreditLimit() throws Exception{
+		BigDecimal totalUnpaidOrders = computeTotalUnpaidOrders();
+		BigDecimal custCreditLimit = computeCreditLimit();
+		BigDecimal remainingCreditLimit = computeCreditLimit().subtract(computeTotalUnpaidOrders());
+		if(totalUnpaidOrders.compareTo(custCreditLimit) == 1)
+			throw new CreditLimitExceededException("Credit limit exceeded, please change the order to be below the credit limit.");
+		else return remainingCreditLimit;
 	}
 }

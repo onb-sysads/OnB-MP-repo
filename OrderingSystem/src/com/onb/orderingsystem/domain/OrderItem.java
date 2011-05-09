@@ -2,14 +2,13 @@ package com.onb.orderingsystem.domain;
 
 import java.math.BigDecimal;
 
-
-
 public class OrderItem {
 	private int orderItemID;
 	private Product orderItemProduct;
 	private int orderItemQuantity;
 
-	public OrderItem(int orderItemID, Product orderItemProduct, int orderItemQuantity) {
+	public OrderItem(int orderItemID, Product orderItemProduct,
+			int orderItemQuantity) {
 		super();
 		this.orderItemID = orderItemID;
 		this.orderItemProduct = orderItemProduct;
@@ -48,15 +47,10 @@ public class OrderItem {
 		BigDecimal bd = new BigDecimal(this.getOrderItemQuantity());
 		return this.orderItemProduct.getProductPrice().multiply(bd);
 	}
-	
+
 	public boolean checkIfAvailable() throws ProductException {
-		if(this.orderItemProduct.getProductQuantity() >= this.orderItemQuantity)
-		
+		if (this.orderItemProduct.getProductQuantity() >= this.orderItemQuantity)
 			return true;
 		throw new ProductException("Ordered Qty is greater than the supply ");
 	}
-
-	
-	
-	
 }
