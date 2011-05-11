@@ -6,20 +6,18 @@ import java.util.List;
 
 import com.onb.orderingsystem.utils.Enumerators.OrderStatus;
 
+
 public class Customer {
 	private int custID;
-	private String custFirstName;
-	private String custLastName;
+	private String companyName;
 	private BigDecimal custCreditLimit = new BigDecimal(10000.00);
 	private List<Order> custOrder = new ArrayList<Order>();
 	
-	public Customer(int custID, String custFirstName, String custLastName,
-			/*BigDecimal custCreditLimit,*/ List<Order> custOrder) {
+	public Customer(int custID, String company, List<Order> custOrder) {
 		super();
 		this.custID = custID;
-		this.custFirstName = custFirstName;
-		this.custLastName = custLastName;
-		/*this.custCreditLimit = custCreditLimit;*/
+		this.companyName = company;
+		
 		this.custOrder = custOrder;
 	}
 
@@ -36,19 +34,15 @@ public class Customer {
 	}
 
 	public String getCustFirstName() {
-		return custFirstName;
+		return companyName;
 	}
 
-	public void setCustFirstName(String custFirstName) {
-		this.custFirstName = custFirstName;
+	public String getCompanyName() {
+		return companyName;
 	}
 
-	public String getCustLastName() {
-		return custLastName;
-	}
-
-	public void setCustLastName(String custLastName) {
-		this.custLastName = custLastName;
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
 	public BigDecimal getCustCreditLimit() {
@@ -62,12 +56,18 @@ public class Customer {
 	public void setCustOrder(List<Order> custOrder) {
 		this.custOrder = custOrder;
 	}
+	/**
+	 * @param order
+	 * Adds order to the existing orders of the customer
+	 */
 	
-	//add order to the list of orders of a customer
 	public void addOrder(Order order) {
 		this.custOrder.add(order);
 	}
-
+	/**
+	 * Computes the total paid orders of the customer from the history
+	 *
+	 */
 	public final BigDecimal computeTotalPaidOrders() {
 		BigDecimal totalPaidOrders = new BigDecimal(0.0);
 		for(Order order : this.custOrder){
@@ -76,7 +76,10 @@ public class Customer {
 		}
 		return totalPaidOrders;
 	}
-
+	/**
+	 * Computes the total unpaid orders of the customer from the history
+	 * 
+	 */
 	public BigDecimal computeTotalUnpaidOrders() {
 		BigDecimal totalUnpaidOrders = new BigDecimal(0.0);
 		for(Order order : this.custOrder){
@@ -85,7 +88,10 @@ public class Customer {
 		}
 		return totalUnpaidOrders;
 	}
-	
+	/**
+	 * Computes the credit limit of a customer
+	 *
+	 */
 	public final BigDecimal computeCreditLimit() {
 		BigDecimal totalPaidOrders = this.computeTotalPaidOrders();
 		if(totalPaidOrders.compareTo(new BigDecimal(100000.00)) == -1)
@@ -100,6 +106,10 @@ public class Customer {
 			return this.custCreditLimit = new BigDecimal(150000.00);
 		else return null;
 	}
+	/**
+	 * @throws CreditLimitExceededException
+	 * Checks the credit limit of a customer
+	 */
 	
 	public final BigDecimal checkCreditLimit() throws Exception{
 		BigDecimal totalUnpaidOrders = computeTotalUnpaidOrders();

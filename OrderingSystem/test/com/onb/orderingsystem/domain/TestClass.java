@@ -49,14 +49,14 @@ public class TestClass {
 		orderItemList.add(orderItem);
 		orderItemList.add(orderItem2);
 		Order order = new Order(1, orderItemList, OrderStatus.UNPAID,
-				"2011/05/09");
+				"2011/05/11");
 		Order order2 = new Order(1, orderItemList, OrderStatus.PAID,
-				"2011/05/09");
+				"2011/05/11");
 		List<Order> orderList = new ArrayList<Order>();
 		orderList.add(order);
 		orderList.add(order2);
 		
-		assertEquals("2011/05/09", order.getOrderDate());
+		assertEquals("2011/05/11", order.getOrderDate());
 	}
 	
 	@Test
@@ -91,7 +91,7 @@ public class TestClass {
 		List<Order> orderList = new ArrayList<Order>();
 		orderList.add(order);
 		orderList.add(order2);
-		Customer customer = new Customer(1, "Cyril", "Pangilinan", orderList);
+		Customer customer = new Customer(1, "Jollibee", orderList);
 		
 		assertEquals(new BigDecimal(50.00),customer.computeTotalPaidOrders());
 	}
@@ -112,7 +112,7 @@ public class TestClass {
 		orderList.add(order);
 		orderList.add(order2);
 		orderList.add(order3);
-		Customer customer = new Customer(1, "Cyril", "Pangilinan", orderList);
+		Customer customer = new Customer(1, "Jollibee", orderList);
 		
 		assertEquals(new BigDecimal(300010.00), customer.computeTotalUnpaidOrders());
 	}
@@ -133,7 +133,7 @@ public class TestClass {
 		orderList.add(order);
 		orderList.add(order2);
 		orderList.add(order3);
-		Customer customer = new Customer(1, "Cyril", "Pangilinan", orderList);
+		Customer customer = new Customer(1, "Jollibee", orderList);
 		
 		assertEquals(new BigDecimal(30000.00), customer.computeCreditLimit());
 	}
@@ -325,7 +325,7 @@ public class TestClass {
 		orderList.add(order);
 		orderList.add(order2);
 		orderList.add(order3);
-		Customer customer = new Customer(1, "Cyril", "Pangilinan", orderList);
+		Customer customer = new Customer(1, "Jollibee", orderList);
 		
 		assertEquals(new BigDecimal(8000),customer.checkCreditLimit());
 	}

@@ -21,9 +21,9 @@ public class Order {
 	
 	private OrderStatus orderStatus = OrderStatus.UNPAID;
 	
-	//not sure if this is required for this class!
-	private Customer orderCustomer; //Added
-	private BigDecimal orderTotalPrice; //Added
+	
+	private Customer orderCustomer; 
+	private BigDecimal orderTotalPrice; 
 	private static final BigDecimal DISCOUNT_REQUIREMENT = new BigDecimal(1000000.00); //Added
 	private static final BigDecimal DISCOUNT_RATE = new BigDecimal(.10); //Added
 	
@@ -66,7 +66,10 @@ public class Order {
 	public String getOrderDate() {
 		return orderDate;
 	}
-	
+	/**
+	 * Computes the total amount of the current order
+	 *
+	 */
 	public BigDecimal computeOrderTotalPrice() {
 		BigDecimal total = new BigDecimal(0.0);
 		for(OrderItem orderItem : orderList){
@@ -75,17 +78,29 @@ public class Order {
 		this.orderTotalPrice = total;
 		return total;
 	}
-	
+	/**
+	 * @param orderItem
+	 * @throws ProductException
+	 * Adds an order item to the order list
+	 */
 	public void addOrderItem(OrderItem orderItem) throws ProductException {
 		if(orderItem.checkIfAvailable()) {
 			this.orderList.add(orderItem);
 		}
 	}
+	/**
+	 * Checks if a customer is entitled a discount 
+	 *
+	 */
 
 	public boolean checkDiscount() {
 		int flag = this.orderCustomer.computeTotalPaidOrders().compareTo(Order.DISCOUNT_REQUIREMENT);
 		if (flag == 1) { return true; } else return false;
 	}
+	/**
+	 * Applies discount to the current order
+	 *
+	 */
 	
 	public void applyDiscount() {
 		if (this.checkDiscount()) {
@@ -108,7 +123,12 @@ public class Order {
 	public void setOrderTotalPrice(BigDecimal orderTotalPrice) {
 		this.orderTotalPrice = orderTotalPrice;
 	}
-
+	
+	
+	/**
+	 * Consolidates similar order items into  single order item
+	 *
+	 */
 	public void consolidateItems() {
 		for (OrderItem item : orderList) {
 			if (checkIfInList(item))
@@ -118,6 +138,11 @@ public class Order {
 		}
 		setOrderList(this.newOrderList);
 	}
+	
+	/**
+	 * Checks if an item is similar to the other items in the order list
+	 *
+	 */
 
 	private boolean checkIfInList(OrderItem orderItem) {
 		int previousQty;
