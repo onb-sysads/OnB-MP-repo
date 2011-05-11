@@ -10,14 +10,14 @@ import com.onb.orderingsystem.utils.Enumerators.OrderStatus;
 public class Customer {
 	private int custID;
 	private String companyName;
-	private BigDecimal custCreditLimit = new BigDecimal(10000.00);
+	private BigDecimal custCreditLimit;
 	private List<Order> custOrder = new ArrayList<Order>();
+	private static final BigDecimal DISCOUNT_REQUIREMENT = new BigDecimal(1000000.00);
 	
 	public Customer(int custID, String company, List<Order> custOrder) {
 		super();
 		this.custID = custID;
 		this.companyName = company;
-		
 		this.custOrder = custOrder;
 	}
 
@@ -119,4 +119,15 @@ public class Customer {
 			throw new CreditLimitExceededException("Credit limit exceeded, please change the order to be below the credit limit.");
 		else return remainingCreditLimit;
 	}
+	
+	/**
+	 * Checks if a customer is entitled a discount 
+	 *
+	 */
+
+	public boolean checkDiscount() {
+		int flag = this.computeTotalPaidOrders().compareTo(DISCOUNT_REQUIREMENT);
+		if (flag == 1) { return true; } else return false;
+	}
+	
 }

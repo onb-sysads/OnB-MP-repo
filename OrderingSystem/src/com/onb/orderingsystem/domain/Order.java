@@ -21,12 +21,11 @@ public class Order {
 	
 	private OrderStatus orderStatus = OrderStatus.UNPAID;
 	
+	private BigDecimal orderTotalPrice;
+	private Customer orderCustomer;
 	
-	private Customer orderCustomer; 
-	private BigDecimal orderTotalPrice; 
-	private static final BigDecimal DISCOUNT_REQUIREMENT = new BigDecimal(1000000.00); //Added
-	private static final BigDecimal DISCOUNT_RATE = new BigDecimal(.10); //Added
-	
+	private static final BigDecimal DISCOUNT_RATE = new BigDecimal(.10);
+		
 	public Order(int orderID, List<OrderItem> orderList, OrderStatus orderStatus, String orderDate) {
 		super();
 		this.orderID = orderID;
@@ -88,25 +87,6 @@ public class Order {
 			this.orderList.add(orderItem);
 		}
 	}
-	/**
-	 * Checks if a customer is entitled a discount 
-	 *
-	 */
-
-	public boolean checkDiscount() {
-		int flag = this.orderCustomer.computeTotalPaidOrders().compareTo(Order.DISCOUNT_REQUIREMENT);
-		if (flag == 1) { return true; } else return false;
-	}
-	/**
-	 * Applies discount to the current order
-	 *
-	 */
-	
-	public void applyDiscount() {
-		if (this.checkDiscount()) {
-			this.orderTotalPrice = this.orderTotalPrice.subtract((this.orderTotalPrice.multiply(Order.DISCOUNT_RATE)));
-		}
-	}
 
 	public Customer getOrderCustomer() {
 		return orderCustomer;
@@ -160,6 +140,17 @@ public class Order {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Applies discount to the current order
+	 *
+	 */
+	
+	public void applyDiscount() {
+		if (this.orderCustomer.checkDiscount()) {
+			this.orderTotalPrice = this.orderTotalPrice.subtract((this.orderTotalPrice.multiply(DISCOUNT_RATE)));
+		}
 	}
 	
 }

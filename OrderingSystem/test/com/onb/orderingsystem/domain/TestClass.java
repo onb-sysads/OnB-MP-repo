@@ -220,7 +220,7 @@ public class TestClass {
 		currentOrder.setOrderList(currentOrderItemList);
 		currentOrder.setOrderCustomer(customer);
 		
-		assertTrue(currentOrder.checkDiscount());	
+		assertTrue(currentOrder.getOrderCustomer().checkDiscount());	
 	}
 	
 	@Test
