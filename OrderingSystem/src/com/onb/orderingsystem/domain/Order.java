@@ -65,6 +65,7 @@ public class Order {
 	public String getOrderDate() {
 		return orderDate;
 	}
+	
 	/**
 	 * Computes the total amount of the current order
 	 *
@@ -77,6 +78,7 @@ public class Order {
 		this.orderTotalPrice = total;
 		return total;
 	}
+	
 	/**
 	 * @param orderItem
 	 * @throws ProductException
@@ -104,7 +106,6 @@ public class Order {
 		this.orderTotalPrice = orderTotalPrice;
 	}
 	
-	
 	/**
 	 * Consolidates similar order items into  single order item
 	 *
@@ -123,7 +124,6 @@ public class Order {
 	 * Checks if an item is similar to the other items in the order list
 	 *
 	 */
-
 	private boolean checkIfInList(OrderItem orderItem) {
 		int previousQty;
 		int addedQty;
@@ -146,11 +146,105 @@ public class Order {
 	 * Applies discount to the current order
 	 *
 	 */
-	
 	public void applyDiscount() {
 		if (this.orderCustomer.checkDiscount()) {
 			this.orderTotalPrice = this.orderTotalPrice.subtract((this.orderTotalPrice.multiply(DISCOUNT_RATE)));
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((DATE_FORMAT == null) ? 0 : DATE_FORMAT.hashCode());
+		result = prime * result
+				+ ((calendar == null) ? 0 : calendar.hashCode());
+		result = prime * result
+				+ ((dateFormat == null) ? 0 : dateFormat.hashCode());
+		result = prime * result
+				+ ((newOrderList == null) ? 0 : newOrderList.hashCode());
+		result = prime * result
+				+ ((orderCustomer == null) ? 0 : orderCustomer.hashCode());
+		result = prime * result
+				+ ((orderDate == null) ? 0 : orderDate.hashCode());
+		result = prime * result + orderID;
+		result = prime * result
+				+ ((orderList == null) ? 0 : orderList.hashCode());
+		result = prime * result
+				+ ((orderStatus == null) ? 0 : orderStatus.hashCode());
+		result = prime * result
+				+ ((orderTotalPrice == null) ? 0 : orderTotalPrice.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Order other = (Order) obj;
+		if (DATE_FORMAT == null) {
+			if (other.DATE_FORMAT != null)
+				return false;
+		} else if (!DATE_FORMAT.equals(other.DATE_FORMAT))
+			return false;
+		if (calendar == null) {
+			if (other.calendar != null)
+				return false;
+		} else if (!calendar.equals(other.calendar))
+			return false;
+		if (dateFormat == null) {
+			if (other.dateFormat != null)
+				return false;
+		} else if (!dateFormat.equals(other.dateFormat))
+			return false;
+		if (newOrderList == null) {
+			if (other.newOrderList != null)
+				return false;
+		} else if (!newOrderList.equals(other.newOrderList))
+			return false;
+		if (orderCustomer == null) {
+			if (other.orderCustomer != null)
+				return false;
+		} else if (!orderCustomer.equals(other.orderCustomer))
+			return false;
+		if (orderDate == null) {
+			if (other.orderDate != null)
+				return false;
+		} else if (!orderDate.equals(other.orderDate))
+			return false;
+		if (orderID != other.orderID)
+			return false;
+		if (orderList == null) {
+			if (other.orderList != null)
+				return false;
+		} else if (!orderList.equals(other.orderList))
+			return false;
+		if (orderStatus == null) {
+			if (other.orderStatus != null)
+				return false;
+		} else if (!orderStatus.equals(other.orderStatus))
+			return false;
+		if (orderTotalPrice == null) {
+			if (other.orderTotalPrice != null)
+				return false;
+		} else if (!orderTotalPrice.equals(other.orderTotalPrice))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Order [DATE_FORMAT=" + DATE_FORMAT + ", calendar=" + calendar
+				+ ", dateFormat=" + dateFormat + ", newOrderList="
+				+ newOrderList + ", orderCustomer=" + orderCustomer
+				+ ", orderDate=" + orderDate + ", orderID=" + orderID
+				+ ", orderList=" + orderList + ", orderStatus=" + orderStatus
+				+ ", orderTotalPrice=" + orderTotalPrice + "]";
 	}
 	
 }
