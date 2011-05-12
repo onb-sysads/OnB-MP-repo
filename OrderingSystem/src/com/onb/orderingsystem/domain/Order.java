@@ -16,8 +16,8 @@ public class Order {
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 	private final Calendar calendar = Calendar.getInstance();
 	
-	private List<OrderItem> orderList = new ArrayList<OrderItem>();
-	private List<OrderItem> newOrderList = new ArrayList<OrderItem>();
+	private List<OrderItem> orderItemList = new ArrayList<OrderItem>();
+	private List<OrderItem> newOrderItemList = new ArrayList<OrderItem>();
 	
 	private OrderStatus orderStatus = OrderStatus.UNPAID;
 	
@@ -29,7 +29,7 @@ public class Order {
 	public Order(int orderID, List<OrderItem> orderList, OrderStatus orderStatus, String orderDate) {
 		super();
 		this.orderID = orderID;
-		this.orderList = orderList;
+		this.orderItemList = orderList;
 		this.orderStatus = orderStatus;
 		this.orderDate = dateFormat.format(calendar.getTime()).toString();
 	}
@@ -47,11 +47,11 @@ public class Order {
 	}
 
 	public List<OrderItem> getOrderList() {
-		return orderList;
+		return orderItemList;
 	}
 
 	public void setOrderList(List<OrderItem> orderList) {
-		this.orderList = orderList;
+		this.orderItemList = orderList;
 	}
 	
 	public OrderStatus getOrderStatus() {
@@ -66,13 +66,17 @@ public class Order {
 		return orderDate;
 	}
 	
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
+	}
+
 	/**
 	 * Computes the total amount of the current order
 	 *
 	 */
 	public BigDecimal computeOrderTotalPrice() {
 		BigDecimal total = new BigDecimal(0.0);
-		for(OrderItem orderItem : orderList){
+		for(OrderItem orderItem : orderItemList){
 			total = total.add(orderItem.computeTotalPrice());
 		}
 		this.orderTotalPrice = total;
@@ -86,7 +90,7 @@ public class Order {
 	 */
 	public void addOrderItem(OrderItem orderItem) throws ProductException {
 		if(orderItem.checkIfAvailable()) {
-			this.orderList.add(orderItem);
+			this.orderItemList.add(orderItem);
 		}
 	}
 
@@ -111,13 +115,13 @@ public class Order {
 	 *
 	 */
 	public void consolidateItems() {
-		for (OrderItem item : orderList) {
+		for (OrderItem item : orderItemList) {
 			if (checkIfInList(item))
-				this.newOrderList.add(item);
+				this.newOrderItemList.add(item);
 			else
-				this.newOrderList.add(item);
+				this.newOrderItemList.add(item);
 		}
-		setOrderList(this.newOrderList);
+		setOrderList(this.newOrderItemList);
 	}
 	
 	/**
@@ -127,7 +131,7 @@ public class Order {
 	private boolean checkIfInList(OrderItem orderItem) {
 		int previousQty;
 		int addedQty;
-		for (OrderItem item : this.newOrderList) {
+		for (OrderItem item : this.newOrderItemList) {
 			if (new Integer(item.getOrderItemProduct().getProductID())
 					.equals(new Integer(orderItem.getOrderItemProduct()
 							.getProductID()))) {
@@ -135,7 +139,7 @@ public class Order {
 				previousQty = item.getOrderItemQuantity();
 				addedQty = orderItem.getOrderItemQuantity();
 				orderItem.setOrderItemQty(previousQty + addedQty);
-				this.newOrderList.remove(item);
+				this.newOrderItemList.remove(item);
 				return true;
 			}
 		}
@@ -163,14 +167,14 @@ public class Order {
 		result = prime * result
 				+ ((dateFormat == null) ? 0 : dateFormat.hashCode());
 		result = prime * result
-				+ ((newOrderList == null) ? 0 : newOrderList.hashCode());
+				+ ((newOrderItemList == null) ? 0 : newOrderItemList.hashCode());
 		result = prime * result
 				+ ((orderCustomer == null) ? 0 : orderCustomer.hashCode());
 		result = prime * result
 				+ ((orderDate == null) ? 0 : orderDate.hashCode());
 		result = prime * result + orderID;
 		result = prime * result
-				+ ((orderList == null) ? 0 : orderList.hashCode());
+				+ ((orderItemList == null) ? 0 : orderItemList.hashCode());
 		result = prime * result
 				+ ((orderStatus == null) ? 0 : orderStatus.hashCode());
 		result = prime * result
@@ -202,10 +206,10 @@ public class Order {
 				return false;
 		} else if (!dateFormat.equals(other.dateFormat))
 			return false;
-		if (newOrderList == null) {
-			if (other.newOrderList != null)
+		if (newOrderItemList == null) {
+			if (other.newOrderItemList != null)
 				return false;
-		} else if (!newOrderList.equals(other.newOrderList))
+		} else if (!newOrderItemList.equals(other.newOrderItemList))
 			return false;
 		if (orderCustomer == null) {
 			if (other.orderCustomer != null)
@@ -219,10 +223,10 @@ public class Order {
 			return false;
 		if (orderID != other.orderID)
 			return false;
-		if (orderList == null) {
-			if (other.orderList != null)
+		if (orderItemList == null) {
+			if (other.orderItemList != null)
 				return false;
-		} else if (!orderList.equals(other.orderList))
+		} else if (!orderItemList.equals(other.orderItemList))
 			return false;
 		if (orderStatus == null) {
 			if (other.orderStatus != null)
@@ -241,9 +245,9 @@ public class Order {
 	public String toString() {
 		return "Order [DATE_FORMAT=" + DATE_FORMAT + ", calendar=" + calendar
 				+ ", dateFormat=" + dateFormat + ", newOrderList="
-				+ newOrderList + ", orderCustomer=" + orderCustomer
+				+ newOrderItemList + ", orderCustomer=" + orderCustomer
 				+ ", orderDate=" + orderDate + ", orderID=" + orderID
-				+ ", orderList=" + orderList + ", orderStatus=" + orderStatus
+				+ ", orderList=" + orderItemList + ", orderStatus=" + orderStatus
 				+ ", orderTotalPrice=" + orderTotalPrice + "]";
 	}
 	
