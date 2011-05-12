@@ -35,10 +35,6 @@ public class Customer {
 		this.custID = custID;
 	}
 
-	public String getCustFirstName() {
-		return custCompanyName;
-	}
-
 	public String getCompanyName() {
 		return custCompanyName;
 	}

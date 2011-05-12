@@ -48,14 +48,14 @@ public class TestClass {
 		orderItemList.add(orderItem);
 		orderItemList.add(orderItem2);
 		Order order = new Order(1, orderItemList, OrderStatus.UNPAID,
-				"2011/05/11");
+				"2011/05/12");
 		Order order2 = new Order(1, orderItemList, OrderStatus.PAID,
-				"2011/05/11");
+				"2011/05/12");
 		List<Order> orderList = new ArrayList<Order>();
 		orderList.add(order);
 		orderList.add(order2);
 		
-		assertEquals("2011/05/11", order.getOrderDate());
+		assertEquals("2011/05/12", order.getOrderDate());
 	}
 	
 	@Test
