@@ -1,4 +1,4 @@
-package com.onb.orderingsystem.domain;
+package com.onb.orderingsystem.exceptions;
 
 public class CreditLimitExceededException extends Exception {
 

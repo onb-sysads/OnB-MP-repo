@@ -1,4 +1,4 @@
-package com.onb.orderingsystem.service;
+package com.onb.orderingsystem.domain;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.onb.orderingsystem.domain.Order;
 import com.onb.orderingsystem.domain.OrderItem;
 import com.onb.orderingsystem.domain.Product;
-import com.onb.orderingsystem.domain.ProductException;
+import com.onb.orderingsystem.exceptions.ProductException;
 
 
 public class UpdateTest {
@@ -44,8 +44,8 @@ public class UpdateTest {
 		
 	
 		
-		Update update = new Update(order);
-		update.consolidateItems();
+//		Update update = new Update(order);
+//		update.consolidateItems();
 		
 		
 		
