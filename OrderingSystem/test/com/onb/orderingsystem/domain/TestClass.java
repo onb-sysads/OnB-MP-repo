@@ -3,13 +3,12 @@ package com.onb.orderingsystem.domain;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Test;
 
+import com.onb.orderingsystem.exceptions.ProductException;
 import com.onb.orderingsystem.utils.Enumerators.OrderStatus;
 
 public class TestClass {

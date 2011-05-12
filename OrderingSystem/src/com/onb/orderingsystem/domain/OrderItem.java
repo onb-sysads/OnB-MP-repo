@@ -2,6 +2,8 @@ package com.onb.orderingsystem.domain;
 
 import java.math.BigDecimal;
 
+import com.onb.orderingsystem.exceptions.ProductException;
+
 public class OrderItem {
 	private int orderItemID;
 	private Product orderItemProduct;

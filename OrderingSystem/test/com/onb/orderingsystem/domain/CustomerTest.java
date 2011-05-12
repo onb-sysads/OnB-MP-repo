@@ -6,7 +6,6 @@ import java.util.Set;
 import org.junit.Test;
 
 public class CustomerTest {
-	
 /*	@Test
 	public void TestForTotalOrderPrice(){
 		Product product = new Product(1, 5, "Apple", 10);
