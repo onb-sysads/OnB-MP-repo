@@ -6,7 +6,6 @@ import com.onb.orderingsystem.domain.Customer;
 
 public interface DAOCustomer{
 	List<Customer> getAll() throws DAOException;
-	void add(Customer c) throws DAOException;
 	void update(Customer c) throws DAOException;
-	
+	void clear(Customer c) throws DAOException;
 }
