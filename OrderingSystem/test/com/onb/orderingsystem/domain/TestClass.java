@@ -134,7 +134,7 @@ public class TestClass {
 		orderList.add(order3);
 		Customer customer = new Customer(1, "Jollibee", orderList);
 		
-		assertEquals(new BigDecimal(30000.00), customer.computeCreditLimit());
+		assertEquals(new BigDecimal(456000.00), customer.computeCreditLimit());
 	}
 
 		@Test (expected = ProductException.class)
@@ -219,7 +219,7 @@ public class TestClass {
 		currentOrder.setOrderList(currentOrderItemList);
 		currentOrder.setOrderCustomer(customer);
 		
-		assertTrue(currentOrder.checkDiscount());	
+		assertTrue(currentOrder.getOrderCustomer().checkDiscount());	
 	}
 	
 	@Test

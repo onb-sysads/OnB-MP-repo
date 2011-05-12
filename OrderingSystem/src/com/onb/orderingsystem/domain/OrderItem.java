@@ -50,8 +50,8 @@ public class OrderItem {
 	 *
 	 */
 	public BigDecimal computeTotalPrice() {
-		BigDecimal bd = new BigDecimal(this.getOrderItemQuantity());
-		return this.orderItemProduct.getProductPrice().multiply(bd);
+		BigDecimal quantityBD = new BigDecimal(this.getOrderItemQuantity());
+		return this.orderItemProduct.getProductPrice().multiply(quantityBD);
 	}
 	
 	
