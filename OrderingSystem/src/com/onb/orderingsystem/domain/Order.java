@@ -1,9 +1,11 @@
 package com.onb.orderingsystem.domain;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.onb.orderingsystem.exceptions.ProductException;
@@ -12,9 +14,9 @@ import com.onb.orderingsystem.utils.Enumerators.OrderStatus;
 public class Order {
 	private int orderID;
 	
-	private String orderDate;
+	private Date orderDate;
 	private final String DATE_FORMAT = "yyyy/MM/dd";
-	private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+	private final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 	private final Calendar calendar = Calendar.getInstance();
 	
 	private List<OrderItem> orderItemList = new ArrayList<OrderItem>();
@@ -27,12 +29,12 @@ public class Order {
 	
 	private static final BigDecimal DISCOUNT_RATE = new BigDecimal(.10);
 		
-	public Order(int orderID, List<OrderItem> orderList, OrderStatus orderStatus, String orderDate) {
+	public Order(int orderID, List<OrderItem> orderList, OrderStatus orderStatus, Date orderDate) {
 		super();
 		this.orderID = orderID;
 		this.orderItemList = orderList;
 		this.orderStatus = orderStatus;
-		this.orderDate = dateFormat.format(calendar.getTime()).toString();
+		this.orderDate = orderDate;
 	}
 
 	public Order() {
@@ -63,11 +65,11 @@ public class Order {
 		this.orderStatus = orderStatus;
 	}
 	
-	public String getOrderDate() {
+	public Date getOrderDate() {
 		return orderDate;
 	}
 	
-	public void setOrderDate(String orderDate) {
+	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
 
