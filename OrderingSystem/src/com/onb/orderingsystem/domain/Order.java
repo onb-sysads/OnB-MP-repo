@@ -91,7 +91,12 @@ public class Order {
 	 */
 	public void addOrderItem(OrderItem orderItem) throws ProductException {
 		if(orderItem.checkIfAvailable()) {
-			this.orderItemList.add(orderItem);
+			if(checkIfInList(orderItem)){
+				this.orderItemList.add(orderItem);
+			} 
+			else {
+				this.orderItemList.add(orderItem);
+			}
 		}
 	}
 
@@ -110,20 +115,7 @@ public class Order {
 	public void setOrderTotalPrice(BigDecimal orderTotalPrice) {
 		this.orderTotalPrice = orderTotalPrice;
 	}
-	
-	/**
-	 * Consolidates similar order items into  single order item
-	 *
-	 */
-	public void consolidateItems() {
-		for (OrderItem item : orderItemList) {
-			if (checkIfInList(item))
-				this.newOrderItemList.add(item);
-			else
-				this.newOrderItemList.add(item);
-		}
-		setOrderList(this.newOrderItemList);
-	}
+
 	
 	/**
 	 * Checks if an item is similar to the other items in the order list
@@ -132,7 +124,7 @@ public class Order {
 	private boolean checkIfInList(OrderItem orderItem) {
 		int previousQty;
 		int addedQty;
-		for (OrderItem item : this.newOrderItemList) {
+		for (OrderItem item : this.orderItemList) {
 			if (new Integer(item.getOrderItemProduct().getProductID())
 					.equals(new Integer(orderItem.getOrderItemProduct()
 							.getProductID()))) {
@@ -140,7 +132,7 @@ public class Order {
 				previousQty = item.getOrderItemQuantity();
 				addedQty = orderItem.getOrderItemQuantity();
 				orderItem.setOrderItemQty(previousQty + addedQty);
-				this.newOrderItemList.remove(item);
+				this.orderItemList.remove(item);
 				return true;
 			}
 		}

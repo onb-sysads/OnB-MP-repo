@@ -19,6 +19,7 @@ import com.onb.orderingsystem.domain.OrderItem;
 import com.onb.orderingsystem.domain.Product;
 
 public class DAOCustomerJdbcImpl implements DAOCustomer{
+	
 	private final static String GETALL = "SELECT * FROM CUSTOMER, ORDER, ORDERITEM, PRODUCT";
 	private final static String INSERT = "INSERT INTO CUSTOMER (CUSTOMER_ID, CUSTOMER_NAME, CUSTOMER_CREDITLIMIT) "
 		+ "VALUES (?,?,?)";
