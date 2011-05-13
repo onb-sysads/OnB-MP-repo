@@ -48,14 +48,14 @@ public class DAOCustomerJdbcImpl implements DAOCustomer{
 		List<Customer> allCust= new ArrayList<Customer>();
 		Customer cust = new Customer();
 		Connection conn = null;
-		PreparedStatement stmt = null;
+		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(GETALL,
+			pstmt = conn.prepareStatement(GETALL,
 					Statement.RETURN_GENERATED_KEYS);
-			rs = stmt.executeQuery(GETALL);
+			rs = pstmt.executeQuery(GETALL);
 			while (rs.next()){
 				if(allCust.contains(cust.getCustID())){
 					
@@ -66,7 +66,7 @@ public class DAOCustomerJdbcImpl implements DAOCustomer{
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		} finally {
-			closeResources(rs, stmt, conn);
+			closeResources(rs, pstmt, conn);
 		}
 		
 		return allCust;
@@ -124,12 +124,6 @@ public class DAOCustomerJdbcImpl implements DAOCustomer{
 	}
 
 	@Override
-	public void clear(Customer c) throws DAOException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public Customer findById(int id) throws DAOException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -137,7 +131,7 @@ public class DAOCustomerJdbcImpl implements DAOCustomer{
 		Customer customer = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(FINDBYID_STMT);
+			stmt = conn.prepareStatement(FINDBYID);
 			stmt.setInt(1, id);
 			rs = stmt.executeQuery();
 			if (rs.next()) {
