@@ -11,7 +11,7 @@ import com.onb.orderingsystem.domain.Customer;
 
 public class DAOCustomerJdbcImpl implements DAOCustomer{
 	private final static String GETALLSQL = "select * from customer";
-	private final static String INSERTSQL = "insert into customer (customer_id, customer_name, customer_creditlimit) values (?,?,?)";
+	private final static String INSERTSQL = "insert into custoctmer (customer_id, customer_name, customer_creditlimit) values (?,?,?)";
 	private final static String UPDATESQL = "update customer set customer_id = ?, customer_name = ?, customer_creditlimit = ?";
 	private final static String FINDBYID = GETALLSQL + " where customer_id = ?";
 	

@@ -295,7 +295,7 @@ public class TestClass {
 		order.addOrderItem(orderItem5);
 		order.addOrderItem(orderItem6);
 		
-		order.consolidateItems();
+		
 		
 		List <OrderItem> list = new ArrayList<OrderItem>();
 		list = order.getOrderList(); 
