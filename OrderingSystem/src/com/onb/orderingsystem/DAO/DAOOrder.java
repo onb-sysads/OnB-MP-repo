@@ -8,9 +8,9 @@ import com.onb.orderingsystem.domain.Order;
 public interface DAOOrder{
 	
 	List<Order> getAll() throws DAOException;
-	void add(Order o) throws DAOException;
+	void create(Order o) throws DAOException;
 	void update(Order o) throws DAOException;
-	void clear() throws DAOException;
+	void delete(Order o) throws DAOException;
 	Order findById(int id) throws DAOException;
 	
 }

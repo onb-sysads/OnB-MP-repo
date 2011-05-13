@@ -16,10 +16,6 @@ public class OrderItem {
 		this.orderItemQuantity = orderItemQuantity;
 	}
 
-	public OrderItem() {
-		super();
-	}
-
 	public int getOrderItemID() {
 		return orderItemID;
 	}
