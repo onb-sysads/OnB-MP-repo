@@ -6,7 +6,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,12 +19,10 @@ import com.onb.orderingsystem.domain.Product;
 
 public class DAOCustomerJdbcImpl implements DAOCustomer{
 	
-	private final static String GETALL = "SELECT * FROM CUSTOMER, ORDER, ORDERITEM, PRODUCT";
-	private final static String INSERT = "INSERT INTO CUSTOMER (CUSTOMER_ID, CUSTOMER_NAME, CUSTOMER_CREDITLIMIT) "
+	private final static String GETALLSQL = "SELECT * FROM CUSTOMER, ORDER, ORDERITEM, PRODUCT";
+	private final static String INSERTSQL = "INSERT INTO CUSTOMER (CUSTOMER_ID, CUSTOMER_NAME, CUSTOMER_CREDITLIMIT) "
 		+ "VALUES (?,?,?)";
-	private final static String UPDATE = "UPDATE CUSTOMER SET CUSTOMER_ID = ?, CUSTOMER_NAME = ?, CUSTOMER_CREDITLIMIT = ?";
-	private final static String FINDBYID = "SELECT * FROM CUSTOMER WHERE CUSTOMER_ID = ?";
-	
+
 	private final static String JDBCURL = "jdbc:mysql://localhost:3306";
 	private final static String JDBCUSER = "root";
 	private final static String JDBCPASSWD = "";
@@ -53,9 +50,9 @@ public class DAOCustomerJdbcImpl implements DAOCustomer{
 		
 		try {
 			conn = getConnection();
-			pstmt = conn.prepareStatement(GETALL,
-					Statement.RETURN_GENERATED_KEYS);
-			rs = pstmt.executeQuery(GETALL);
+			pstmt = conn.prepareStatement(GETALLSQL,
+					PreparedStatement.RETURN_GENERATED_KEYS);
+			rs = pstmt.executeQuery(GETALLSQL);
 			while (rs.next()){
 				if(allCust.contains(cust.getCustID())){
 					
@@ -72,7 +69,7 @@ public class DAOCustomerJdbcImpl implements DAOCustomer{
 		return allCust;
 	}
 
-	private void closeResources(ResultSet rs, Statement stmt, Connection conn) throws DAOException{
+	private void closeResources(ResultSet rs, PreparedStatement stmt, Connection conn) throws DAOException{
 		if (rs != null) {
 			try {
 				rs.close();
@@ -99,9 +96,8 @@ public class DAOCustomerJdbcImpl implements DAOCustomer{
 	private Customer mapRowIntoCustomer(ResultSet rs) throws SQLException{
 		int custId = rs.getInt("CUSTOMER_ID");
 		String custName = rs.getString("CUSTOMER_NAME");
-		BigDecimal custCreditLimit = rs.getBigDecimal("CUSTOMER_CREDITLIMIT");
 
-		return new Customer(custId, custName, custCreditLimit);
+		return new Customer(custId, custName);
 	}
 
 	@Override

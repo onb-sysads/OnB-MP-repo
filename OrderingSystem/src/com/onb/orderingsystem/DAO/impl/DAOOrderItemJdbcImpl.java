@@ -6,14 +6,14 @@ import com.onb.orderingsystem.DAO.DAOException;
 import com.onb.orderingsystem.DAO.DAOOrderItem;
 import com.onb.orderingsystem.domain.OrderItem;
 
-public class DAOOrderItemjdbcImpl implements DAOOrderItem{
+public class DAOOrderItemJdbcImpl implements DAOOrderItem{
 	
 	
 	private final static String INSERTSQL = "INSERT INTO ORDERITEM (ORDERITEM_QTY, ORDERITEM_PRODUCT, ORDERITEM_ORDER, ORDERITEM_PRICE) VALUES (?,?,?,?)";
 	private final static String GETALLSQL = "SELECT * FROM ORDERITEM";
 	
 	
-	private final static String JDBCURL = "jdbc:mysql://localhost:3306";
+	private final static String JDBCURL = "jdbc:mysql://localhost:3306/ORDERINGSYSTEM_TEST";
 	private final static String JDBCUSER = "root";
 	private final static String JDBCPASSWD = "";
 	private final static String JDBCDRIVER = "com.mysql.jdbc.Driver";

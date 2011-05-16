@@ -17,8 +17,6 @@ public class Order {
 	private Date orderDate;
 	private final String DATE_FORMAT = "yyyy-MM-dd";
 	private final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-	private final Calendar calendar = Calendar.getInstance();
-
 	private List<OrderItem> orderItemList = new ArrayList<OrderItem>();
 	private BigDecimal orderTotalPrice;
 	private boolean isPaid = false;
