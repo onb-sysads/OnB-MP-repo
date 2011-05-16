@@ -100,45 +100,26 @@ public class DAOCustomerJdbcImpl implements DAOCustomer{
 		int custId = rs.getInt("CUSTOMER_ID");
 		String custName = rs.getString("CUSTOMER_NAME");
 		BigDecimal custCreditLimit = rs.getBigDecimal("CUSTOMER_CREDITLIMIT");
-		
-		int orderId = rs.getInt("ORDER_ID");
-		Date orderDate = rs.getDate("ORDER_DATE");
-		BigDecimal orderPrice = rs.getBigDecimal("ORDER_PRICE");
-		String orderStatus = rs.getString("ORDER_STATUS");
-		int orderCustId = rs.getInt("ORDER_CUSTOMER");
-		
-		int orderItemQty = rs.getInt("ORDERITEM_QTY");
-		int orderItemProduct = rs.getInt("ORDERITEM_PRODUCT");
-		int orderItemOrderId = rs.getInt("ORDERITEM_ORDERID");
-		
-		int productId = rs.getInt("PRODUCT_ID");
-		String productName = rs.getString("PRODUCT_NAME");
-		int productQty = rs.getInt("PRODUCT_QTY");
-		BigDecimal productPrice = rs.getBigDecimal("PRODUCT_PRICE");
-		
-		if
-		
-		Product product = new Product(productId, productName, productPrice, productQty);
-		List<Order> orderList
-		return new Customer(custId, custName, custCreditLimit, new Order(orderId, orderDate, orderPrice, orderStatus, orderCustID, new OrderItem(orderItemId, orderItemQty, orderItemProduct, orderItemOrderID, new Product(productID, productName, productQty, productPrice))));
+
+		return new Customer(custId, custName, custCreditLimit);
 	}
 
 	@Override
 	public void update(Customer c) throws DAOException {
 		Connection conn = null;
-		PreparedStatement stmt = null;
+		PreparedStatement pstmt = null;
 		try {
 			conn = getConnection();
-			stmt = conn.prepareStatement(UPDATE_SQL);
-			stmt.setInt(1, c.getCustID());
-			stmt.setString(2, c.getCompanyName());
-			stmt.setBigDecimal(3, c.getCustCreditLimit());
-			stmt.executeUpdate();
+			pstmt = conn.prepareStatement(UPDATE);
+			pstmt.setInt(1, c.getCustID());
+			pstmt.setString(2, c.getCompanyName());
+			pstmt.setBigDecimal(3, c.getCustCreditLimit());
+			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		} finally {
-			closeResources(null, stmt, conn);
+			closeResources(null, pstmt, conn);
 		}
 	}
 

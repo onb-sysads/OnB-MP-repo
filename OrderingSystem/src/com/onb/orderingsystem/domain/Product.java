@@ -3,11 +3,12 @@ package com.onb.orderingsystem.domain;
 import java.math.BigDecimal;
 
 public class Product {
-	private int productID;
+
+	private final int productID;
 	private String productName;
-	private int productQuantity;
+	private int productQuantity; //to do validation if entered quantity = 0
 	private BigDecimal productPrice;
-	
+
 	public Product(int productID, String productName, int productQuantity,
 			BigDecimal productPrice) {
 		super();
@@ -15,18 +16,6 @@ public class Product {
 		this.productName = productName;
 		this.productQuantity = productQuantity;
 		this.productPrice = productPrice;
-	}
-
-	public Product() {
-		super();
-	}
-
-	public int getProductID() {
-		return productID;
-	}
-
-	public void setProductID(int productID) {
-		this.productID = productID;
 	}
 
 	public String getProductName() {
@@ -41,7 +30,7 @@ public class Product {
 		return productQuantity;
 	}
 
-	public void setProductQty(int productQuantity) {
+	public void setProductQuantity(int productQuantity) {
 		this.productQuantity = productQuantity;
 	}
 
@@ -53,16 +42,19 @@ public class Product {
 		this.productPrice = productPrice;
 	}
 
+	public int getProductID() {
+		return productID;
+	}
+
+	public void updateInventory(int orderItemQuantity) {
+		this.setProductQuantity(this.getProductQuantity() - orderItemQuantity);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + productID;
-		result = prime * result
-				+ ((productName == null) ? 0 : productName.hashCode());
-		result = prime * result
-				+ ((productPrice == null) ? 0 : productPrice.hashCode());
-		result = prime * result + productQuantity;
 		return result;
 	}
 
@@ -77,18 +69,6 @@ public class Product {
 		Product other = (Product) obj;
 		if (productID != other.productID)
 			return false;
-		if (productName == null) {
-			if (other.productName != null)
-				return false;
-		} else if (!productName.equals(other.productName))
-			return false;
-		if (productPrice == null) {
-			if (other.productPrice != null)
-				return false;
-		} else if (!productPrice.equals(other.productPrice))
-			return false;
-		if (productQuantity != other.productQuantity)
-			return false;
 		return true;
 	}
 
@@ -98,5 +78,5 @@ public class Product {
 				+ productName + ", productPrice=" + productPrice
 				+ ", productQuantity=" + productQuantity + "]";
 	}
-	
+
 }
