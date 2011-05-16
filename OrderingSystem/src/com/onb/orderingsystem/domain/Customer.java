@@ -4,151 +4,160 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.onb.orderingsystem.exceptions.CreditLimitExceededException;
-import com.onb.orderingsystem.utils.Enumerators.OrderStatus;
-
+import com.onb.orderingsystem.domain.CreditLimitExceededException;
 
 public class Customer {
-	private int custID;
-	private String custCompanyName;
-	private BigDecimal custCreditLimit = null;
-	private List<Order> custOrder = new ArrayList<Order>();
-	
-	private static final BigDecimal DISCOUNT_REQUIREMENT = new BigDecimal(1000000.00);
-	
-	public Customer(int custID, String company, List<Order> custOrder) {
+
+	private final int customerID;
+	private String customerCompanyName = "";
+	private List<Order> customerOrderList = new ArrayList<Order>();
+
+	private static final BigDecimal DISCOUNT_REQUIREMENT = new BigDecimal(
+			"1000000.00");
+
+	public Customer(int id) {
 		super();
-		this.custID = custID;
-		this.custCompanyName = company;
-		this.custOrder = custOrder;
+		this.customerID = id;
 	}
-	
-	public Customer(int custID, String company, BigDecimal creditLimit ) {
+
+	public Customer(int customerID, String customerCompanyName,
+			List<Order> customerOrderList) {
 		super();
-		this.custID = custID;
-		this.custCompanyName = company;
-		this.custCreditLimit = creditLimit;
+		this.customerID = customerID;
+		this.customerCompanyName = customerCompanyName;
+		this.customerOrderList = customerOrderList;
 	}
 
-	public Customer() {
-		super();
+	public String getCustomerCompanyName() {
+		return customerCompanyName;
 	}
 
-	public int getCustID() {
-		return custID;
+	public void setCustomerCompanyName(String customerCompanyName) {
+		this.customerCompanyName = customerCompanyName;
 	}
 
-	public void setCustID(int custID) {
-		this.custID = custID;
+	public List<Order> getCustomerOrderList() {
+		return customerOrderList;
 	}
 
-	public String getCompanyName() {
-		return custCompanyName;
+	public void setCustomerOrderList(List<Order> customerOrderList) {
+		this.customerOrderList = customerOrderList;
 	}
 
-	public void setCompanyName(String companyName) {
-		this.custCompanyName = companyName;
+	public int getCustomerID() {
+		return customerID;
 	}
 
-	public BigDecimal getCustCreditLimit() {
-		return custCreditLimit;
+	public BigDecimal getTotalPaidOrders() {
+		return this.computeTotalPaidOrders();
 	}
 
-	public List<Order> getCustOrder() {
-		return custOrder;
+	public BigDecimal getTotalUnpaidOrders() {
+		return this.computeTotalUnpaidOrders();
 	}
 
-	public void setCustOrder(List<Order> custOrder) {
-		this.custOrder = custOrder;
+	public BigDecimal getTotalPurchases() {
+		return this.computeTotalUnpaidOrders().add(computeTotalPaidOrders());
 	}
-	
+
+	public BigDecimal getRemainingCreditLimit() {
+		return this.computeRemainingCreditLimit();
+	}
+
 	/**
 	 * @param order
-	 * Adds order to the existing orders of the customer
+	 *            Adds order to the existing orders of the customer
+	 * @throws com.onb.orderingsystem.domain.CreditLimitExceededException
+	 * 
 	 */
-	public void addOrder(Order order) {
-		this.custOrder.add(order);
+	public void addOrder(Order order) throws CreditLimitExceededException {
+		if (order.isOrderValid()) {
+			this.customerOrderList.add(order);
+			for (OrderItem orderItem : order.getOrderItemList()) {
+				orderItem.getOrderItemProduct().updateInventory(
+						orderItem.getOrderItemQuantity());
+			}
+		} else {
+			throw new CreditLimitExceededException(
+					"The remaining credit limit for that customer has been exceeded!");
+		}
 	}
-	
+
 	/**
 	 * Computes the total paid orders of the customer from the history
-	 *
+	 * 
 	 */
-	public final BigDecimal computeTotalPaidOrders() {
-		BigDecimal totalPaidOrders = new BigDecimal(0.0);
-		for(Order order : this.custOrder){
-			if(order.getOrderStatus() == OrderStatus.PAID)
-				totalPaidOrders = totalPaidOrders.add(order.computeOrderTotalPrice());
+	private final BigDecimal computeTotalPaidOrders() {
+		BigDecimal totalPaidOrders = new BigDecimal("0.00");
+		for (Order order : this.customerOrderList) {
+			if (order.isPaid() == true)
+				totalPaidOrders = totalPaidOrders.add(order
+						.getOrderTotalPrice());
 		}
 		return totalPaidOrders;
 	}
-	
+
 	/**
 	 * Computes the total unpaid orders of the customer from the history
 	 * 
 	 */
-	public BigDecimal computeTotalUnpaidOrders() {
-		BigDecimal totalUnpaidOrders = new BigDecimal(0.0);
-		for(Order order : this.custOrder){
-			if(order.getOrderStatus() == OrderStatus.UNPAID)
-				totalUnpaidOrders = totalUnpaidOrders.add(order.computeOrderTotalPrice());
+	private BigDecimal computeTotalUnpaidOrders() {
+		BigDecimal totalUnpaidOrders = new BigDecimal("0.00");
+		for (Order order : this.customerOrderList) {
+			if (order.isPaid() == false) {
+				totalUnpaidOrders = totalUnpaidOrders.add(order
+						.getOrderTotalPrice());
+			}
 		}
 		return totalUnpaidOrders;
 	}
-	
+
 	/**
-	 * Computes the credit limit of a customer
-	 *
+	 * Computes the current credit limit of the customer
+	 * 
 	 */
-	public final BigDecimal computeCreditLimit() {
+	private BigDecimal computeRemainingCreditLimit() {
+		return this.checkBaseCreditLimit().subtract(
+				this.computeTotalUnpaidOrders());
+
+	}
+
+	private BigDecimal checkBaseCreditLimit() {
 		BigDecimal totalPaidOrders = this.computeTotalPaidOrders();
-		if(totalPaidOrders.compareTo(new BigDecimal(100000.00)) == -1)
-			return this.custCreditLimit = new BigDecimal(10000.00);
-		else if((totalPaidOrders.compareTo(new BigDecimal(100000.00)) == 1) && 
-					(totalPaidOrders.compareTo(new BigDecimal(500000.00)) == -1))
-			return this.custCreditLimit = new BigDecimal(30000.00);
-		else if((totalPaidOrders.compareTo(new BigDecimal(500000.00)) == 1) && 
-				(totalPaidOrders.compareTo(new BigDecimal(1000000.00)) == -1))
-			return this.custCreditLimit = new BigDecimal(75000.00);
-		else if((totalPaidOrders.compareTo(new BigDecimal(1000000.00)) == 1))
-			return this.custCreditLimit = new BigDecimal(150000.00);
-		else return null;
+		if (totalPaidOrders.compareTo(new BigDecimal("100000.00")) == 0
+				|| totalPaidOrders.compareTo(new BigDecimal("100000.00")) == -1) {
+			return new BigDecimal("10000.00");
+		} else if (totalPaidOrders.compareTo(new BigDecimal("100000.00")) == 1
+				&& (totalPaidOrders.compareTo(new BigDecimal("500000.00")) == -1 || totalPaidOrders
+						.compareTo(new BigDecimal("500000.00")) == 0)) {
+			return new BigDecimal("30000.00");
+		} else if (totalPaidOrders.compareTo(new BigDecimal("500000.00")) == 1
+				&& (totalPaidOrders.compareTo(new BigDecimal("1000000.00")) == -1 || totalPaidOrders
+						.compareTo(new BigDecimal("1000000.00")) == 0)) {
+			return new BigDecimal("75000.00");
+		} else {
+			return new BigDecimal("150000.00");
+		}
 	}
-	
+
 	/**
-	 * @throws CreditLimitExceededException
-	 * Checks the credit limit of a customer
-	 */
-	
-	public final BigDecimal checkCreditLimit() throws Exception{
-		BigDecimal totalUnpaidOrders = computeTotalUnpaidOrders();
-		BigDecimal custCreditLimit = computeCreditLimit();
-		BigDecimal remainingCreditLimit = computeCreditLimit().subtract(computeTotalUnpaidOrders());
-		if(totalUnpaidOrders.compareTo(custCreditLimit) == 1)
-			throw new CreditLimitExceededException("Credit limit exceeded, please change the order to be below the credit limit.");
-		else return remainingCreditLimit;
-	}
-	
-	/**
-	 * Checks if a customer is entitled a discount 
-	 *
+	 * Checks if a customer is entitled a discount
+	 * 
 	 */
 	public boolean checkDiscount() {
-		int flag = this.computeTotalPaidOrders().compareTo(DISCOUNT_REQUIREMENT);
-		if (flag == 1) { return true; } else return false;
+		int flag = this.computeTotalPaidOrders()
+				.compareTo(DISCOUNT_REQUIREMENT);
+		if (flag == 1) {
+			return true;
+		} else
+			return false;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((custCompanyName == null) ? 0 : custCompanyName.hashCode());
-		result = prime * result
-				+ ((custCreditLimit == null) ? 0 : custCreditLimit.hashCode());
-		result = prime * result + custID;
-		result = prime * result
-				+ ((custOrder == null) ? 0 : custOrder.hashCode());
+		result = prime * result + customerID;
 		return result;
 	}
 
@@ -161,31 +170,16 @@ public class Customer {
 		if (getClass() != obj.getClass())
 			return false;
 		Customer other = (Customer) obj;
-		if (custCompanyName == null) {
-			if (other.custCompanyName != null)
-				return false;
-		} else if (!custCompanyName.equals(other.custCompanyName))
-			return false;
-		if (custCreditLimit == null) {
-			if (other.custCreditLimit != null)
-				return false;
-		} else if (!custCreditLimit.equals(other.custCreditLimit))
-			return false;
-		if (custID != other.custID)
-			return false;
-		if (custOrder == null) {
-			if (other.custOrder != null)
-				return false;
-		} else if (!custOrder.equals(other.custOrder))
+		if (customerID != other.customerID)
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Customer [custCompanyName=" + custCompanyName
-				+ ", custCreditLimit=" + custCreditLimit + ", custID=" + custID
-				+ ", custOrder=" + custOrder + "]";
+		return "Customer [customerCompanyName=" + customerCompanyName
+				+ ", customerID=" + customerID + ", customerOrderList="
+				+ customerOrderList + "]";
 	}
-	
+
 }

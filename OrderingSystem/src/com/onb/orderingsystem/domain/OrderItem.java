@@ -2,75 +2,86 @@ package com.onb.orderingsystem.domain;
 
 import java.math.BigDecimal;
 
-import com.onb.orderingsystem.exceptions.ProductException;
+import com.onb.orderingsystem.domain.InsufficientProductException;
 
 public class OrderItem {
-	private int orderItemID;
-	private Product orderItemProduct;
-	private int orderItemQuantity;
 
-	public OrderItem(int orderItemID, Product orderItemProduct, int orderItemQuantity) {
+	private final Order orderItemOrder;
+	private final Product orderItemProduct;
+	private int orderItemQuantity;
+	private BigDecimal orderItemTotalPrice;
+
+	public OrderItem(Order orderItemOrder, Product orderItemProduct,
+			int orderItemQuantity, BigDecimal orderItemTotalPrice) {
 		super();
-		this.orderItemID = orderItemID;
+		this.orderItemOrder = orderItemOrder;
+		this.orderItemProduct = orderItemProduct;
+		this.orderItemQuantity = orderItemQuantity;
+		this.orderItemTotalPrice = orderItemTotalPrice;
+	}
+
+	public OrderItem(Order orderItemOrder, Product orderItemProduct,
+			int orderItemQuantity) {
+		super();
+		this.orderItemOrder = orderItemOrder;
 		this.orderItemProduct = orderItemProduct;
 		this.orderItemQuantity = orderItemQuantity;
 	}
 
-	public int getOrderItemID() {
-		return orderItemID;
-	}
-
-	public void setOrderItemID(int orderItemID) {
-		this.orderItemID = orderItemID;
-	}
-
-	public Product getOrderItemProduct() {
-		return orderItemProduct;
-	}
-
-	public void setOrderItemProduct(Product orderItemProduct) {
-		this.orderItemProduct = orderItemProduct;
+	public Order getOrderItemOrder() {
+		return orderItemOrder;
 	}
 
 	public int getOrderItemQuantity() {
 		return orderItemQuantity;
 	}
 
-	public void setOrderItemQty(int orderItemQuantty) {
-		this.orderItemQuantity = orderItemQuantty;
+	public void setOrderItemQuantity(int orderItemQuantity) {
+		this.orderItemQuantity = orderItemQuantity;
 	}
-	
-	
+
+	public Product getOrderItemProduct() {
+		return orderItemProduct;
+	}
+
+	public BigDecimal getOrderItemTotalPrice() {
+		return orderItemTotalPrice;
+	}
+
 	/**
-	 * Computes the total amount of an order item
-	 *
+	 * Computes the total price of an order item
+	 * 
 	 */
-	public BigDecimal computeTotalPrice() {
-		BigDecimal quantityBD = new BigDecimal(this.getOrderItemQuantity());
-		return this.orderItemProduct.getProductPrice().multiply(quantityBD);
+	public void computeTotalPrice() {
+		BigDecimal quantity = new BigDecimal(this.getOrderItemQuantity());
+		this.orderItemTotalPrice = this.orderItemProduct.getProductPrice()
+				.multiply(quantity);
 	}
-	
-	
+
 	/**
-	 * @throws ProductException
 	 * Checks the inventory if the supply is sufficient for ordered quantity
-	 *
+	 * 
+	 * @throws InsufficientProductException
+	 * 
 	 */
-	public boolean checkIfAvailable() throws ProductException {
-		if (this.orderItemProduct.getProductQuantity() >= this.orderItemQuantity)
+	public boolean checkAvailability() throws InsufficientProductException {
+		if (this.orderItemProduct.getProductQuantity() >= this.orderItemQuantity) {
 			return true;
-		throw new ProductException("Ordered Qty exceeded supply inventory");
+		} else {
+			throw new InsufficientProductException(
+					"Quantity exceeded product supply inventory!");
+		}
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + orderItemID;
+		result = prime * result
+				+ ((orderItemOrder == null) ? 0 : orderItemOrder.hashCode());
 		result = prime
 				* result
 				+ ((orderItemProduct == null) ? 0 : orderItemProduct.hashCode());
-		result = prime * result + orderItemQuantity;
 		return result;
 	}
 
@@ -83,23 +94,25 @@ public class OrderItem {
 		if (getClass() != obj.getClass())
 			return false;
 		OrderItem other = (OrderItem) obj;
-		if (orderItemID != other.orderItemID)
+		if (orderItemOrder == null) {
+			if (other.orderItemOrder != null)
+				return false;
+		} else if (!orderItemOrder.equals(other.orderItemOrder))
 			return false;
 		if (orderItemProduct == null) {
 			if (other.orderItemProduct != null)
 				return false;
 		} else if (!orderItemProduct.equals(other.orderItemProduct))
 			return false;
-		if (orderItemQuantity != other.orderItemQuantity)
-			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "OrderItem [orderItemID=" + orderItemID + ", orderItemProduct="
-				+ orderItemProduct + ", orderItemQuantity=" + orderItemQuantity
-				+ "]";
+		return "OrderItem [orderItemOrder=" + orderItemOrder
+				+ ", orderItemProduct=" + orderItemProduct
+				+ ", orderItemQuantity=" + orderItemQuantity
+				+ ", orderItemTotalPrice=" + orderItemTotalPrice + "]";
 	}
 
 }
