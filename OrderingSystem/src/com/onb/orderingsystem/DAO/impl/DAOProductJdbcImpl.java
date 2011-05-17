@@ -68,7 +68,7 @@ public class DAOProductJdbcImpl implements DAOProduct {
 	private Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(JDBCURL, JDBCUSER, JDBCPASSWD);
 	}
-
+	
 	@Override
 	public List<Product> getAll() throws DAOException {
 		List<Product> all = new ArrayList<Product>();
@@ -155,10 +155,10 @@ public class DAOProductJdbcImpl implements DAOProduct {
 			pstmt.setBigDecimal(4, p.getProductPrice());
 			pstmt.executeUpdate();
 			rs = pstmt.getGeneratedKeys();
-			if (rs.next()) {
-				int id = rs.getInt(1);
-				p.setProductID(id);
-			}
+//			if (rs.next()) {
+//				int id = rs.getInt(1);
+//				p.setProductID(id);
+//			}
 
 		} catch (SQLException e) {
 			throw new DAOException(e);

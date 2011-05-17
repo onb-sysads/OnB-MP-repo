@@ -2,6 +2,7 @@ package com.onb.orderingsystem.domain;
 
 import static org.junit.Assert.*;
 
+import com.onb.orderingsystem.domain.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ import org.junit.Test;
 public class CustomerTest {
 
 	@Test
-	public void testAddOrder() throws CreditLimitExceededException {
+	public void testAddOrder() throws com.onb.orderingsystem.domain.CreditLimitExceededException {
 		Customer customer = new Customer(1);
 		Order order = new Order(1);
 		order.setOrderCustomer(customer);

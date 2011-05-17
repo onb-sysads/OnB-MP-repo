@@ -18,7 +18,7 @@ public class Order {
 	private final String DATE_FORMAT = "yyyy-MM-dd";
 	private final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 	private List<OrderItem> orderItemList = new ArrayList<OrderItem>();
-	private BigDecimal orderTotalPrice;
+	private BigDecimal orderTotalPrice = new BigDecimal("0.00");
 	private boolean isPaid = false;
 
 	private static final BigDecimal DISCOUNT_RATE = new BigDecimal(".10");
@@ -28,8 +28,7 @@ public class Order {
 	}
 
 	public Order(int orderID, Customer orderCustomer, Date orderDate,
-			List<OrderItem> orderItemList, BigDecimal orderTotalPrice,
-			boolean isPaid) {
+			BigDecimal orderTotalPrice,	boolean isPaid, List<OrderItem> orderItemList) {
 		super();
 		this.orderID = orderID;
 		this.orderCustomer = orderCustomer;
@@ -207,8 +206,7 @@ public class Order {
 
 	@Override
 	public String toString() {
-		return "Order [DATE_FORMAT=" + DATE_FORMAT + ", calendar=" + calendar
-				+ ", dateFormat=" + dateFormat + ", isPaid=" + isPaid
+		return "Order [DATE_FORMAT=" + DATE_FORMAT
 				+ ", orderCustomer=" + orderCustomer + ", orderDate="
 				+ orderDate + ", orderID=" + orderID + ", orderItemList="
 				+ orderItemList + ", orderTotalPrice=" + orderTotalPrice + "]";
