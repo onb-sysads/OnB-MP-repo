@@ -28,6 +28,12 @@ public class Customer {
 		this.customerOrderList = customerOrderList;
 	}
 
+	public Customer(int customerID, String customerCompanyName) {
+		this.customerID = customerID;
+		this.customerCompanyName = customerCompanyName;
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getCustomerCompanyName() {
 		return customerCompanyName;
 	}
