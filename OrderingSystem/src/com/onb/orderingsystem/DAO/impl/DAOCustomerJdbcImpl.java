@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import com.onb.orderingsystem.DAO.DAOCustomer;
 import com.onb.orderingsystem.DAO.DAOException;
 import com.onb.orderingsystem.domain.Customer;
@@ -28,45 +27,51 @@ public class DAOCustomerJdbcImpl implements DAOCustomer{
 	private final static String JDBCPASSWD = "";
 	private final static String JDBCDRIVER = "com.mysql.jdbc.Driver";
 	
+	private static final String GETALLCUSTOMERS ="SELECT * FROM CUSTOMER";
+	private static final String GETCUSTOMERBYID = GETALLCUSTOMERS + " WHERE CUSTOMER_ID = ?";
 	static {
 		try {
-			Class.forName(JDBCDRIVER);
+			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(JDBCURL, JDBCUSER, JDBCPASSWD);
+	private Connection getConnection() throws SQLException{
+		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ORDERINGSYSTEM","root","");
+		return con;
 	}
+		
+	public Customer findById(int id) throws DAOException, SQLException {
+		Connection conn = getConnection();
+		Customer customer = null;
+		
+		int customer_id = 0;
+		String customer_name = "";
+		
+		
+	    try{
+		       
+	        PreparedStatement pstmt = conn.prepareStatement(GETCUSTOMERBYID);
+	        pstmt.setInt(1, id);
+	        ResultSet rs = pstmt.executeQuery();
+	        
+	        while (rs.next()){
+	        	
+	        	
+	        	customer_id = rs.getInt("CUSTOMER_ID");
+	        	customer_name = rs.getString("CUSTOMER_NAME");        	
+	        	customer = new Customer(customer_id, customer_name);
 	
-	@Override
-	public List<Customer> getAll() throws DAOException {
-		List<Customer> allCust= new ArrayList<Customer>();
-		Customer cust = new Customer();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+	        }
+        
+      }
+      catch (SQLException s){
+        System.out.println("SQL statement is not executed!"+ " " +s);
+      }
+  
+      return customer;
 		
-		try {
-			conn = getConnection();
-			pstmt = conn.prepareStatement(GETALLSQL,
-					PreparedStatement.RETURN_GENERATED_KEYS);
-			rs = pstmt.executeQuery(GETALLSQL);
-			while (rs.next()){
-				if(allCust.contains(cust.getCustID())){
-					
-				}
-				allCust.add(mapRowIntoCustomer(rs));
-			}
-
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		} finally {
-			closeResources(rs, pstmt, conn);
-		}
-		
-		return allCust;
 	}
 
 	private void closeResources(ResultSet rs, PreparedStatement stmt, Connection conn) throws DAOException{
@@ -143,14 +148,57 @@ public class DAOCustomerJdbcImpl implements DAOCustomer{
 	}
 
 	@Override
-	public void create(Customer c) throws DAOException {
+	public List<Customer> getAllCustomers() throws DAOException, SQLException {
+		List<Customer> listOfCustomers = new ArrayList<Customer>();
+		Connection conn = getConnection();
+		
+		int customer_id = 0;
+		String customer_name = "";
+		
+	      try{
+		       
+		        PreparedStatement pstmt = conn.prepareStatement(GETALLCUSTOMERS);
+		        ResultSet rs = pstmt.executeQuery();
+		        
+		        while (rs.next()){
+		        	
+		        	
+		        	customer_id = rs.getInt("CUSTOMER_ID");
+		        	customer_name = rs.getString("CUSTOMER_NAME");
+		        	
+		        	Customer customer = new Customer(customer_id, customer_name);
+		        	listOfCustomers.add(customer);
+		        }
+	        
+	      }
+	      catch (SQLException s){
+	        System.out.println("SQL statement is not executed!"+ " " +s);
+	      }
+	  
+	return listOfCustomers;
+		
+		
+	}
+
+
+
+	@Override
+	public void create(Customer customer) throws DAOException, SQLException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void delete(Customer c) throws DAOException {
+	public void delete(Customer customer) throws DAOException, SQLException {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void update(Customer customer) throws DAOException, SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }
