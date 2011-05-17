@@ -95,13 +95,5 @@ public class OrderItemDaoTest {
 		
 	}
 
-	@Test 
-	public void testDeleteOrderItem() throws DAOException, SQLException {
-		DAOOrderItemjdbcImpl dao = new DAOOrderItemjdbcImpl();
-		Product mockProduct = new Product(9);
-		Order mockOrder = new Order(9);
-		OrderItem orderItem = new OrderItem( mockOrder,mockProduct, 7);
-		dao.delete(orderItem);
-	}
-
+	
 }
