@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.onb.orderingsystem.DAO.impl.DAOOrderItemjdbcImpl;
@@ -15,6 +16,8 @@ import com.onb.orderingsystem.domain.*;
 public class OrderItemDaoTest {
 	
 	
+
+	
 	
 	@Test
 	public void testFindAnOrderItem() throws DAOException, SQLException {
@@ -22,10 +25,10 @@ public class OrderItemDaoTest {
 		Product mockProduct = new Product(1);
 		
 		Order order = new Order(1);
-		OrderItem oi = new OrderItem(mockProduct,4, order);
+		OrderItem oi = new OrderItem(order, mockProduct,4);
 		OrderItem oItem = dao.findOrderItem(1, 1);
 		
-		assertEquals(oItem.toString(),oi.toString());
+		assertEquals(oItem,oi);
 		
 		
 	}
@@ -52,16 +55,16 @@ public class OrderItemDaoTest {
 		Product mockProduct10 = new Product(10);
 		
 		
-		OrderItem mockOrderItem1 = new OrderItem (mockProduct1, 4, mockOrder1);
-		OrderItem mockOrderItem2 = new OrderItem (mockProduct10, 3, mockOrder1);
-		OrderItem mockOrderItem3 = new OrderItem (mockProduct4, 10, mockOrder1);
-		OrderItem mockOrderItem4 = new OrderItem (mockProduct4, 2, mockOrder2);
-		OrderItem mockOrderItem5 = new OrderItem (mockProduct6, 3, mockOrder2);
-		OrderItem mockOrderItem6 = new OrderItem (mockProduct1, 100, mockOrder3);
-		OrderItem mockOrderItem7 = new OrderItem (mockProduct2, 2, mockOrder3);
-		OrderItem mockOrderItem8 = new OrderItem (mockProduct6, 1, mockOrder4);
-		OrderItem mockOrderItem9 = new OrderItem (mockProduct7, 1, mockOrder5);
-		OrderItem mockOrderItem10 = new OrderItem (mockProduct8, 1, mockOrder6);
+		OrderItem mockOrderItem1 = new OrderItem (mockOrder1, mockProduct1, 4);
+		OrderItem mockOrderItem2 = new OrderItem (mockOrder1, mockProduct10, 3);
+		OrderItem mockOrderItem3 = new OrderItem (mockOrder1, mockProduct4, 10 );
+		OrderItem mockOrderItem4 = new OrderItem (mockOrder2, mockProduct4, 2);
+		OrderItem mockOrderItem5 = new OrderItem (mockOrder2, mockProduct6, 3);
+		OrderItem mockOrderItem6 = new OrderItem (mockOrder3, mockProduct1, 100);
+		OrderItem mockOrderItem7 = new OrderItem (mockOrder3, mockProduct2, 2);
+		OrderItem mockOrderItem8 = new OrderItem (mockOrder4, mockProduct6, 1 );
+		OrderItem mockOrderItem9 = new OrderItem (mockOrder5, mockProduct7, 1);
+		OrderItem mockOrderItem10 = new OrderItem (mockOrder6, mockProduct8, 1);
 		
 		
 		mockListOfOrderItem.add(mockOrderItem1);
@@ -87,17 +90,17 @@ public class OrderItemDaoTest {
 		DAOOrderItemjdbcImpl dao = new DAOOrderItemjdbcImpl();	
 		Product mockProduct = new Product(1);
 		Order mockOrder = new Order(2);
-		OrderItem orderItem = new OrderItem(mockProduct, 7, mockOrder);
+		OrderItem orderItem = new OrderItem( mockOrder,mockProduct, 7);
 		dao.create(orderItem);
 		
 	}
 
 	@Test 
-	public void testDeleteOrderItem() throws DAOException {
+	public void testDeleteOrderItem() throws DAOException, SQLException {
 		DAOOrderItemjdbcImpl dao = new DAOOrderItemjdbcImpl();
-		Product mockProduct = new Product(1);
-		Order mockOrder = new Order(2);
-		OrderItem orderItem = new OrderItem(mockProduct, 7, mockOrder);
+		Product mockProduct = new Product(9);
+		Order mockOrder = new Order(9);
+		OrderItem orderItem = new OrderItem( mockOrder,mockProduct, 7);
 		dao.delete(orderItem);
 	}
 

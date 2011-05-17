@@ -12,10 +12,10 @@ import com.onb.orderingsystem.domain.*;
 public class DAOOrderItemjdbcImpl implements DAOOrderItem{
 	
 	
-	private final static String INSERTANORDERITEM = "INSERT INTO ORDERITEM (ORDERITEM_QTY, ORDERITEM_PRODUCT, ORDERITEM_ORDER, ORDERITEM_PRICE) VALUES (?,?,?,?)";
+	private final static String INSERTANORDERITEM = "INSERT INTO ORDERITEM (ORDERITEM_QTY, ORDERITEM_PRODUCT, ORDERITEM_ORDERID, ORDERITEM_PRICE) VALUES (?,?,?,?)";
 	private final static String GETALLORDERITEM = "SELECT *  FROM CUSTOMER, ORDERS, PRODUCT, ORDERITEM WHERE ORDERS.ORDER_ID = ORDERITEM.ORDERITEM_ORDERID AND ORDERITEM.ORDERITEM_PRODUCT = PRODUCT.PRODUCT_ID AND CUSTOMER.CUSTOMER_ID = ORDERS.ORDER_CUSTOMER";
 	private final static String GETANORDERITEM = GETALLORDERITEM + " AND ORDERITEM.ORDERITEM_ORDERID =? AND ORDERITEM.ORDERITEM_PRODUCT = ?";
-	
+	private final static String DELETEANORDERITEM = "delete from ORDERITEM where ORDERITEM.ORDERITEM_PRODUCT = ? AND ORDERITEM.ORDERITEM_ORDERID = ?";
 	
 	static {
 		try {
@@ -57,8 +57,7 @@ public class DAOOrderItemjdbcImpl implements DAOOrderItem{
 			        	product_productId = rs.getInt("PRODUCT_ID");
 			        	Product product = new Product(product_productId);
 			        	Order order = new Order(rs.getInt("ORDER_ID"));
-			        	orderItem = new OrderItem(product,orderitem_qty ,order);
-			        	orderItem.setOrderItemPrice(orderItemPrice);
+			        	orderItem = new OrderItem(order, product,orderitem_qty);
 			        	orderItemList.add(orderItem);
 			        }
 		        
@@ -81,9 +80,6 @@ public class DAOOrderItemjdbcImpl implements DAOOrderItem{
 		
 		//OrderItem orderItem = null;
 		Connection conn = getConnection();
-		int orderitem_qty = 0;
-		int product_id = 0;
-		int order_id = 0;
 		
 		
 		      try{
@@ -91,10 +87,11 @@ public class DAOOrderItemjdbcImpl implements DAOOrderItem{
 			        PreparedStatement pstmt = conn.prepareStatement(INSERTANORDERITEM);
 			        pstmt.setInt(1, orderItem.getOrderItemQuantity());
 			        pstmt.setInt(2, orderItem.getOrderItemProduct().getProductID());
-			        //TODO prest.setInt(3, orderItem.ge)
-			        ResultSet rs = pstmt.executeQuery();
+			        pstmt.setInt(3, orderItem.getOrderItemOrder().getOrderID());
+			        pstmt.setBigDecimal(4, orderItem.getOrderItemTotalPrice());
+			        pstmt.execute();
 			        
-		        
+			    
 		      }
 		      catch (SQLException s){
 		        System.out.println("SQL statement is not executed!"+ " " +s);
@@ -106,8 +103,26 @@ public class DAOOrderItemjdbcImpl implements DAOOrderItem{
 	
 
 	@Override
-	public void delete(OrderItem oi) throws DAOException {
-		// TODO Auto-generated method stub
+	public void delete(OrderItem orderItem) throws DAOException, SQLException {
+		Connection conn = getConnection();
+		PreparedStatement pstmt = null;
+		
+	
+	
+	      try{   
+	    	  	pstmt = conn.prepareStatement(DELETEANORDERITEM);		       
+	    	  	pstmt.setInt(1, orderItem.getOrderItemProduct().getProductID());
+	    	  	pstmt.setInt(2, orderItem.getOrderItemOrder().getOrderID());
+		       
+		        pstmt.execute();
+		       System.out.println("dumman dito");
+	        
+	      }
+	      catch (SQLException s){
+	        System.out.println("SQL statement is not executed!"+ " " +s);
+	      }
+		  
+		
 		
 	}
 
@@ -122,7 +137,7 @@ public class DAOOrderItemjdbcImpl implements DAOOrderItem{
 		ResultSet rs = null;
 		int orderitem_qty = 0;
 		int product_productId;
-		BigDecimal orderitem_price = BigDecimal.ZERO;
+		
 	
 	      try{
 	       
@@ -135,12 +150,12 @@ public class DAOOrderItemjdbcImpl implements DAOOrderItem{
 		        	
 		        	
 		        	orderitem_qty = rs.getInt("ORDERITEM_QTY");
-		        	orderitem_price = rs.getBigDecimal("ORDERITEM_PRICE");
+		        	
 		        	product_productId = rs.getInt("PRODUCT_ID");
 		        	Product product = new Product(product_productId);
 		        	Order order = new Order(rs.getInt("ORDER_ID"));
-		        	System.out.println(orderitem_qty + " " +orderitem_price);
-		        	orderItem = new OrderItem(product,orderitem_qty, order );
+		        	
+		        	orderItem = new OrderItem( order, product,orderitem_qty);
 		        }
 	        
 	      }
