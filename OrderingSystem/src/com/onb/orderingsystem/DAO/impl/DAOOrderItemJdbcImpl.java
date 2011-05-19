@@ -1,3 +1,5 @@
+package com.onb.orderingsystem.DAO.impl;
+
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
@@ -7,55 +9,59 @@ import com.onb.orderingsystem.DAO.DAOException;
 import com.onb.orderingsystem.DAO.DAOOrderItem;
 import com.onb.orderingsystem.domain.*;
 
-public class DAOOrderItemJdbcImpl implements DAOOrderItem {
+public class DAOOrderItemJdbcImpl extends Connections implements DAOOrderItem {
+	private final static String INSERTSQL = "INSERT INTO ORDERITEM (ORDERITEM_QTY, ORDERITEM_PRODUCT, ORDERITEM_ORDERID, ORDERITEM_PRICE) VALUES (?,?,?,?)";
+	private final static String UPDATESQL = "UPDATE ORDERITEM SET ORDERITEM_QTY = ?, ORDERITEM_ORDERID = ?, ORDERITEM_PRICE = ?"
+			+ " WHERE ORDERITEM_PRODUCT = ?";
 
-	private final static String INSERTANORDERITEM = "INSERT INTO ORDERITEM (ORDERITEM_QTY, ORDERITEM_PRODUCT, ORDERITEM_ORDERID, ORDERITEM_PRICE) VALUES (?,?,?,?)";
-	private final static String GETALLORDERITEM = "SELECT * FROM ORDERITEM WHERE ORDERS.ORDER_ID = ORDERITEM.ORDERITEM_ORDERID AND ORDERITEM.ORDERITEM_PRODUCT = PRODUCT.PRODUCT_ID AND CUSTOMER.CUSTOMER_ID = ORDERS.ORDER_CUSTOMER";
-	private final static String GETANORDERITEM = GETALLORDERITEM
-			+ " AND ORDERITEM.ORDERITEM_ORDERID =? AND ORDERITEM.ORDERITEM_PRODUCT = ?";
-	private final static String DELETEANORDERITEM = "delete from ORDERITEM where ORDERITEM.ORDERITEM_PRODUCT = ? AND ORDERITEM.ORDERITEM_ORDERID = ?";
-
-	private final static String JDBCURL = "jdbc:mysql://localhost:3306/ORDERINGSYSTEM_TEST";
-	private final static String JDBCUSER = "root";
-	private final static String JDBCPASSWD = "";
-	private final static String JDBCDRIVER = "com.mysql.jdbc.Driver";
-
-	private Connection getConnection() throws SQLException {
-		Connection con = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/ORDERINGSYSTEM_TEST", "root", "");
-		return con;
+	private final static String FINDALL_STMT = "SELECT * FROM ORDERITEM, ORDERS, CUSTOMER, PRODUCT" 
+			+ " WHERE ORDERS.ORDER_ID = ORDERITEM.ORDERITEM_ORDERID"
+			+ " AND ORDERITEM.ORDERITEM_PRODUCT = PRODUCT.PRODUCT_ID"
+			+ " AND CUSTOMER.CUSTOMER_ID = ORDERS.ORDER_CUSTOMER";
+	private final static String FINDBYID_STMT = FINDALL_STMT
+			+ " AND ORDERITEM_PRODUCT = ? ";
+	private final static String DELETE_STMT = "DELETE FROM ORDERITEM"
+			+ " WHERE ORDERITEM_PRODUCT = ?";
+	
+	private Product mapRowIntoProduct(ResultSet rs) throws SQLException{
+		int id = rs.getInt("PRODUCT_ID");
+		String prodName= rs.getString("PRODUCT_NAME");
+		int prodQty = rs.getInt("PRODUCT_QTY");
+		BigDecimal prodPrice = rs.getBigDecimal("PRODUCT_PRICE");
+		return new Product(id, prodName, prodQty, prodPrice);
 	}
-
+	
+	private Order mapRowIntoOrder(ResultSet rs) throws SQLException{
+		int id = rs.getInt("ORDER_ID");
+		return new Order(id);
+	}
+	
+	private OrderItem mapRowIntoOrderItem(ResultSet rs) throws SQLException{
+		int orderItemQty = rs.getInt("ORDERITEM_QTY");
+		return new OrderItem(mapRowIntoOrder(rs), mapRowIntoProduct(rs), orderItemQty);
+	}
+	
 	@Override
 	public List<OrderItem> getAll() throws DAOException, SQLException {
-
 		List<OrderItem> orderItemList = new ArrayList<OrderItem>();
-		OrderItem orderItem;
-
-		Connection conn = getConnection();
-
-		int orderitem_qty = 0;
-		int product_productId;
-		BigDecimal orderItemPrice = BigDecimal.ZERO;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
 		try {
-
-			PreparedStatement pstmt = conn.prepareStatement(GETALLORDERITEM);
-			ResultSet rs = pstmt.executeQuery();
-
+			conn = getConnection();
+			pstmt = conn.prepareStatement(FINDALL_STMT, 
+					PreparedStatement.RETURN_GENERATED_KEYS);
+			rs = pstmt.executeQuery(FINDALL_STMT);
 			while (rs.next()) {
-
-				orderitem_qty = rs.getInt("ORDERITEM_QTY");
-				orderItemPrice = rs.getBigDecimal("ORDERITEM_PRICE");
-				product_productId = rs.getInt("PRODUCT_ID");
-				Product product = new Product(product_productId);
-				Order order = new Order(rs.getInt("ORDER_ID"));
-				orderItem = new OrderItem(order, product, orderitem_qty);
-				orderItemList.add(orderItem);
+				orderItemList.add(mapRowIntoOrderItem(rs));
 			}
 
-		} catch (SQLException s) {
-			System.out.println("SQL statement is not executed!" + " " + s);
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		} finally {
+			closeResources(rs, pstmt, conn);
 		}
 
 		return orderItemList;
@@ -63,83 +69,93 @@ public class DAOOrderItemJdbcImpl implements DAOOrderItem {
 
 	@Override
 	public void update(OrderItem oi) throws DAOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void create(OrderItem orderItem) throws DAOException, SQLException {
-
-		// OrderItem orderItem = null;
-		Connection conn = getConnection();
-
-		try {
-
-			PreparedStatement pstmt = conn.prepareStatement(INSERTANORDERITEM);
-			pstmt.setInt(1, orderItem.getOrderItemQuantity());
-			pstmt.setInt(2, orderItem.getOrderItemProduct().getProductID());
-			pstmt.setInt(3, orderItem.getOrderItemOrder().getOrderID());
-			pstmt.setBigDecimal(4, orderItem.getOrderItemTotalPrice());
-			pstmt.execute();
-
-		} catch (SQLException s) {
-			System.out.println("SQL statement is not executed!" + " " + s);
-		}
-
-	}
-
-	@Override
-	public void delete(OrderItem orderItem) throws DAOException, SQLException {
-		Connection conn = getConnection();
+		Connection conn = null;
 		PreparedStatement pstmt = null;
-
-		try {
-			pstmt = conn.prepareStatement(DELETEANORDERITEM);
-			pstmt.setInt(1, orderItem.getOrderItemProduct().getProductID());
-			pstmt.setInt(2, orderItem.getOrderItemOrder().getOrderID());
-
-			pstmt.execute();
-			System.out.println("dumman dito");
-
-		} catch (SQLException s) {
-			System.out.println("SQL statement is not executed!" + " " + s);
+		
+		try{
+			conn = getConnection();
+			pstmt = conn.prepareStatement(UPDATESQL);
+			pstmt.setInt(1, oi.getOrderItemQuantity());
+			pstmt.setInt(2, oi.getOrderItemProduct().getProductID());
+			pstmt.setInt(3, oi.getOrderItemOrder().getOrderID());
+			pstmt.setBigDecimal(4, oi.getOrderItemTotalPrice());
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e){
+			throw new DAOException(e);
+		} finally {
+			closeResources(null, pstmt, conn);
 		}
-
 	}
 
 	@Override
-	public OrderItem findOrderItem(int orderId, int productId)
-			throws DAOException, SQLException {
-		OrderItem orderItem = null;
-		Connection conn = getConnection();
+	public void create(OrderItem oi) throws DAOException, SQLException {
+		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		int orderitem_qty = 0;
-		int product_productId;
 
 		try {
-
-			pstmt = conn.prepareStatement(GETANORDERITEM);
-			pstmt.setInt(1, orderId);
-			pstmt.setInt(2, productId);
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-
-				orderitem_qty = rs.getInt("ORDERITEM_QTY");
-
-				product_productId = rs.getInt("PRODUCT_ID");
-				Product product = new Product(product_productId);
-				Order order = new Order(rs.getInt("ORDER_ID"));
-
-				orderItem = new OrderItem(order, product, orderitem_qty);
-			}
-
-		} catch (SQLException s) {
-			System.out.println("SQL statement is not executed!" + " " + s);
+			conn = getConnection();
+			pstmt = conn.prepareStatement(INSERTSQL,
+					Statement.RETURN_GENERATED_KEYS);
+			pstmt.setInt(1, oi.getOrderItemQuantity());
+			pstmt.setInt(2, oi.getOrderItemProduct().getProductID());
+			pstmt.setInt(3, oi.getOrderItemOrder().getOrderID());
+			pstmt.setBigDecimal(4, oi.getOrderItemTotalPrice());
+			pstmt.executeUpdate();
+			rs = pstmt.getGeneratedKeys();
+			
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		} finally {
+			closeResources(rs, pstmt, conn);
 		}
 
-		return orderItem;
+	}
+
+	@Override
+	public void delete(OrderItem oi) throws DAOException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(DELETE_STMT);
+			pstmt.setInt(1, oi.getOrderItemProduct().getProductID());
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		} finally {
+			closeResources(null, pstmt, conn);
+		}
+	}
+
+	@Override
+	public OrderItem findOrderItem(int productId)
+			throws DAOException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		OrderItem oi = null;
+
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(FINDBYID_STMT);
+			pstmt.setInt(1, productId);
+
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				oi = mapRowIntoOrderItem(rs);
+			}
+
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		} finally {
+			closeResources(rs, pstmt, conn);
+		}
+
+		return oi;
 	}
 
 }

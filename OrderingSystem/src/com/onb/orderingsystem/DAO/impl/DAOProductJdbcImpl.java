@@ -2,7 +2,6 @@ package com.onb.orderingsystem.DAO.impl;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,11 +13,11 @@ import com.onb.orderingsystem.DAO.DAOException;
 import com.onb.orderingsystem.DAO.DAOProduct;
 import com.onb.orderingsystem.domain.Product;
 
-public class DAOProductJdbcImpl implements DAOProduct {
+public class DAOProductJdbcImpl extends Connections implements DAOProduct {
 	private final static String GETALLSQL = "SELECT * FROM PRODUCT";
 	private final static String INSERTSQL = "INSERT INTO PRODUCT (PRODUCT_ID, PRODUCT_NAME, PRODUCT_QTY, PRODUCT_PRICE) VALUES (?,?,?,?)";
 	private final static String UPDATESQL = "UPDATE PRODUCT SET PRODUCT_NAME = ?, PRODUCT_QTY = ?, PRODUCT_PRICE = ?"
-			+ "WHERE PRODUCT_ID = ?";
+			+ " WHERE PRODUCT_ID = ?";
 	
 	private final static String FINDALL_STMT = "SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_QTY, PRODUCT_PRICE FROM PRODUCT";
 	private final static String FINDBYID_STMT = FINDALL_STMT
@@ -26,10 +25,6 @@ public class DAOProductJdbcImpl implements DAOProduct {
 	private final static String DELETEALL_STMT = "DELETE FROM PRODUCT";
 	private final static String DELETE_STMT = DELETEALL_STMT
 			+ " WHERE PRODUCT_ID = ?";
-
-	private final static String JDBCURL = "jdbc:mysql://localhost:3306/ORDERINGSYSTEM_TEST";
-	private final static String JDBCUSER = "root";
-	private final static String JDBCPASSWD = "";
 
 	private Product mapRowIntoProduct(ResultSet rs) throws SQLException {
 		int id = rs.getInt("PRODUCT_ID");
@@ -39,36 +34,6 @@ public class DAOProductJdbcImpl implements DAOProduct {
 		return new Product(id, prodName, prodQty, prodPrice);
 	}
 
-	private void closeResources(ResultSet rs, PreparedStatement pstmt,
-			Connection conn) throws DAOException {
-		if (rs != null) {
-			try {
-				rs.close();
-			} catch (SQLException e) {
-				throw new DAOException(e);
-			}
-		}
-		if (pstmt != null) {
-			try {
-				pstmt.close();
-			} catch (SQLException e) {
-				throw new DAOException(e);
-			}
-		}
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				throw new DAOException(e);
-			}
-		}
-
-	}
-
-	private Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(JDBCURL, JDBCUSER, JDBCPASSWD);
-	}
-	
 	@Override
 	public List<Product> getAll() throws DAOException {
 		List<Product> all = new ArrayList<Product>();
@@ -155,10 +120,6 @@ public class DAOProductJdbcImpl implements DAOProduct {
 			pstmt.setBigDecimal(4, p.getProductPrice());
 			pstmt.executeUpdate();
 			rs = pstmt.getGeneratedKeys();
-//			if (rs.next()) {
-//				int id = rs.getInt(1);
-//				p.setProductID(id);
-//			}
 
 		} catch (SQLException e) {
 			throw new DAOException(e);
@@ -171,6 +132,7 @@ public class DAOProductJdbcImpl implements DAOProduct {
 	public void delete(Product p) throws DAOException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(DELETE_STMT);

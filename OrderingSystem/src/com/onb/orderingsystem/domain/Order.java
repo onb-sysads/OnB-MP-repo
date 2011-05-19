@@ -46,8 +46,8 @@ public class Order {
 		this.orderCustomer = orderCustomer;
 	}
 
-	public Date getOrderDate() {
-		return orderDate;
+	public String getOrderDate() {
+		return dateFormat.format(orderDate);
 	}
 
 	public void setOrderDate(Date orderDate) {

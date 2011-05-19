@@ -11,8 +11,7 @@ public interface DAOOrderItem{
 	void update(OrderItem oi) throws DAOException;
 	void create(OrderItem oi) throws DAOException, SQLException;
 	void delete(OrderItem oi) throws DAOException;
-	//OrderItem findById(int id) throws DAOException;
-	OrderItem findOrderItem(int orderId, int productId) throws DAOException, SQLException;
+	OrderItem findOrderItem(int productId) throws DAOException, SQLException;
 	
 	
 	

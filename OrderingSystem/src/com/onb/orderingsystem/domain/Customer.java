@@ -31,7 +31,6 @@ public class Customer {
 	public Customer(int customerID, String customerCompanyName) {
 		this.customerID = customerID;
 		this.customerCompanyName = customerCompanyName;
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getCustomerCompanyName() {

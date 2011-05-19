@@ -18,18 +18,19 @@ import com.onb.orderingsystem.domain.Product;
 public class DAOProductJdbcImplTest {
 
 	private DAOProduct daoProduct = new DAOProductJdbcImpl();
+	
 	@Test
-	public void testGetAll() throws DAOException{
+	public void testCreateAndGetAll() throws DAOException{
 		List<Product> initialList = daoProduct.getAll();
 		Product prod = new Product(1, "iPhone 4", 500, new BigDecimal("43259.00"));
 		assertEquals(1, prod.getProductID());
 		initialList.add(prod);
-		List<Product> productAfterAdding = daoProduct.getAll();
+		List<Product> tempList = daoProduct.getAll();
 		boolean found = false;
-		for(Product productAdded : productAfterAdding)  {
-			if (productAdded.getProductID() == prod.getProductID()) {
+		for(Product product : tempList)  {
+			if (product.getProductID() == prod.getProductID()) {
 				found = true;
-				assertEquals(new Product(1, "iPhone 4", 500, new BigDecimal("43259.00")),initialList.contains(prod));
+				assertEquals(prod.getProductName(),product.getProductName());
 			}
 		}
 		assertTrue(found);
