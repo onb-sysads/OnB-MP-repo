@@ -18,7 +18,7 @@ import com.onb.orderingsystem.domain.Order;
 import com.onb.orderingsystem.domain.OrderItem;
 import com.onb.orderingsystem.domain.Product;
 
-public class DAOOrderItemJdbcImplTest {
+public class DAOOrderItemJdbcImplTest{
 	
 	private DAOOrderItem daoOrderItem = new DAOOrderItemJdbcImpl();
 	
@@ -61,7 +61,7 @@ public class DAOOrderItemJdbcImplTest {
 //	}
 	
 	@Test
-	public void testFindById() throws DAOException, SQLException{
+	public void testFindById() throws DAOException{
 		List<OrderItem> orderList = new ArrayList<OrderItem>();
 		List<OrderItem> initialList = daoOrderItem.getAll();
 		Product prod = new Product(1, "iPhone 4", 500, new BigDecimal("43259.00"));
@@ -78,12 +78,12 @@ public class DAOOrderItemJdbcImplTest {
 	}
 	
 	@Test
-	public void testUpdate() throws DAOException, SQLException{
+	public void testUpdate() throws DAOException {
 		
 	}
 	
 	@Test
-	public void testDelete() throws DAOException, SQLException{
+	public void testDelete() throws DAOException {
 		List<OrderItem> initialList = daoOrderItem.getAll();
 		
 		Product prod4 = new Product(7, "MacBook Pro 15", 30, new BigDecimal("62900.00"));

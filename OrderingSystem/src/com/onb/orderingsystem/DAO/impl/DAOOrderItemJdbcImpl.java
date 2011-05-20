@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mysql.jdbc.Driver;
 import com.onb.orderingsystem.DAO.DAOException;
 import com.onb.orderingsystem.DAO.DAOOrderItem;
 import com.onb.orderingsystem.domain.*;
@@ -23,26 +24,44 @@ public class DAOOrderItemJdbcImpl extends Connections implements DAOOrderItem {
 	private final static String DELETE_STMT = "DELETE FROM ORDERITEM"
 			+ " WHERE ORDERITEM_PRODUCT = ?";
 	
-	private Product mapRowIntoProduct(ResultSet rs) throws SQLException{
-		int id = rs.getInt("PRODUCT_ID");
-		String prodName= rs.getString("PRODUCT_NAME");
-		int prodQty = rs.getInt("PRODUCT_QTY");
-		BigDecimal prodPrice = rs.getBigDecimal("PRODUCT_PRICE");
+	private Product mapRowIntoProduct(ResultSet rs) throws DAOException {
+		int id;
+		String prodName;
+		int prodQty;
+		BigDecimal prodPrice;
+		try {
+			id = rs.getInt("PRODUCT_ID");
+			prodName = rs.getString("PRODUCT_NAME");
+			prodQty = rs.getInt("PRODUCT_QTY");
+			prodPrice = rs.getBigDecimal("PRODUCT_PRICE");
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
 		return new Product(id, prodName, prodQty, prodPrice);
 	}
 	
-	private Order mapRowIntoOrder(ResultSet rs) throws SQLException{
-		int id = rs.getInt("ORDER_ID");
+	private Order mapRowIntoOrder(ResultSet rs) throws DAOException{
+		int id;
+		try {
+			id = rs.getInt("ORDER_ID");
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
 		return new Order(id);
 	}
 	
-	private OrderItem mapRowIntoOrderItem(ResultSet rs) throws SQLException{
-		int orderItemQty = rs.getInt("ORDERITEM_QTY");
+	private OrderItem mapRowIntoOrderItem(ResultSet rs) throws DAOException{
+		int orderItemQty;
+		try {
+			orderItemQty = rs.getInt("ORDERITEM_QTY");
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
 		return new OrderItem(mapRowIntoOrder(rs), mapRowIntoProduct(rs), orderItemQty);
 	}
 	
 	@Override
-	public List<OrderItem> getAll() throws DAOException, SQLException {
+	public List<OrderItem> getAll() throws DAOException {
 		List<OrderItem> orderItemList = new ArrayList<OrderItem>();
 		
 		Connection conn = null;
@@ -89,7 +108,7 @@ public class DAOOrderItemJdbcImpl extends Connections implements DAOOrderItem {
 	}
 
 	@Override
-	public void create(OrderItem oi) throws DAOException, SQLException {
+	public void create(OrderItem oi) throws DAOException{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

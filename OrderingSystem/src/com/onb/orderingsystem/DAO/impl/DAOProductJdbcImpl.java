@@ -26,12 +26,16 @@ public class DAOProductJdbcImpl extends Connections implements DAOProduct {
 	private final static String DELETE_STMT = DELETEALL_STMT
 			+ " WHERE PRODUCT_ID = ?";
 
-	private Product mapRowIntoProduct(ResultSet rs) throws SQLException {
-		int id = rs.getInt("PRODUCT_ID");
-		String prodName= rs.getString("PRODUCT_NAME");
-		int prodQty = rs.getInt("PRODUCT_QTY");
-		BigDecimal prodPrice = rs.getBigDecimal("PRODUCT_PRICE");
-		return new Product(id, prodName, prodQty, prodPrice);
+	private Product mapRowIntoProduct(ResultSet rs) throws DAOException {
+		try {
+			int id = rs.getInt("PRODUCT_ID");
+			String prodName= rs.getString("PRODUCT_NAME");
+			int prodQty = rs.getInt("PRODUCT_QTY");
+			BigDecimal prodPrice = rs.getBigDecimal("PRODUCT_PRICE");
+			return new Product(id, prodName, prodQty, prodPrice);
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
 	}
 
 	@Override

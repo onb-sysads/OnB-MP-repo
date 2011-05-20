@@ -1,5 +1,6 @@
 package com.onb.orderingsystem.DAO.impl;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -20,23 +21,28 @@ import com.onb.orderingsystem.domain.Product;
 
 public class DAOOrderJdbcImplTest {
 
-	private DAOOrder daoOrder = new DAOOrderJdbcImpl();
+	 private DAOOrder daoOrder = new DAOOrderJdbcImpl();
 
-	// @Test
-	// public void testGetAll() throws DAOException {
-	// List<Order> initialOrderList = daoOrder.getAll();
-	// boolean found = false;
-	// for (Order order : initialOrderList) {
-	// if (order.getOrderID() == initialOrderList.contains(order
-	// .getOrderID())) {
-	// found = true;
-	// assertEquals(new Product(1, "iPhone 4", 500, new BigDecimal(
-	// "43259.00")), prod);
-	// }
-	// }
-	// assertTrue(found);
-	// }
-
+     @Test
+     public void testGetAll() throws DAOException {
+     List<Order> initialOrderList = daoOrder.getAll();
+	 List<Order> testList = new ArrayList<Order>();
+	 
+	 List<OrderItem> orderItemList = new ArrayList<OrderItem>();
+	 
+	 Date date = new java.util.Date(2011-05-18);
+	 BigDecimal bd = null;
+	 
+	 Product product = new Product(8, "MacBook Pro 17", 120, new BigDecimal("107457.00"));
+	 Customer customer = new Customer(7, "Ayala Corporation");
+	 Order order = new Order(6, customer, date, bd, Boolean.TRUE, orderItemList);
+	 OrderItem orderItem = new OrderItem(order, product, 1, bd);
+	 orderItemList.add(orderItem);
+	 order.setOrderItemList(orderItemList);
+	 //assertEquals(new Order(6, customer, date, bd, Boolean.TRUE, orderItemList), daoOrder.getAll());
+	 assertTrue(daoOrder.getAll().contains(order));
+	 }
+     
 	@Test
 	public void testFindById() throws DAOException {
 		List<Order> initialList = daoOrder.getAll();
@@ -72,8 +78,35 @@ public class DAOOrderJdbcImplTest {
 			}
 		}
 		assertTrue(found);
-		//assertTrue(daoOrder.findById(1) == order1);
-		
-		//assertEquals(initialList, daoOrder.findById(1));
 	}
+     
+ 	@Test
+ 	public void delete() throws DAOException {
+ 		
+ 		List<Order> initialList = daoOrder.getAll();
+ 		List<OrderItem> orderItemList = new ArrayList<OrderItem>();
+ 		 
+ 		Date date = new java.util.Date(2011-05-18);
+ 		BigDecimal bd = null;
+ 		 
+ 		Product product = new Product(8, "MacBook Pro 17", 120, new BigDecimal("107457.00"));
+ 		Customer customer = new Customer(7, "Ayala Corporation");
+ 		Order order = new Order(6, customer, date, bd, Boolean.TRUE, orderItemList);
+ 		OrderItem orderItem = new OrderItem(order, product, 1, bd);
+ 		orderItemList.add(orderItem);
+ 		order.setOrderItemList(orderItemList);
+ 		initialList.add(order);
+ 		
+ 		daoOrder.delete(order);
+ 		
+ 		List<Order> listAfterDeleting = daoOrder.getAll();
+ 		
+ 		boolean found = false;
+ 		for(Order o: listAfterDeleting)  {
+ 			if (order.getOrderID() == o.getOrderID()) {
+ 				found = true;
+ 			}
+ 		}
+ 		assertFalse(found);
+ 	}
 }

@@ -44,8 +44,12 @@ public class Connections {
 			
 			}
 
-	protected Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(JDBCURL, JDBCUSER, JDBCPASSWD);
+	protected Connection getConnection() throws DAOException {
+		try {
+			return DriverManager.getConnection(JDBCURL, JDBCUSER, JDBCPASSWD);
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
 	}
 
 }

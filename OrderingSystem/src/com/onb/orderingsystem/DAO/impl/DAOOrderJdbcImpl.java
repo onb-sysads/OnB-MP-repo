@@ -27,48 +27,12 @@ public class DAOOrderJdbcImpl extends Connections implements DAOOrder {
 	private final static String DELETEALL_STMT = "DELETE FROM ORDERS";
 	private final static String DELETE_STMT = DELETEALL_STMT
 			+ " WHERE ORDER_ID = ?";
-
-	private OrderItem mapRowOrderItem(ResultSet rs) throws SQLException{
-		int prodId = rs.getInt("PRODUCT_ID");
-		String prodName = rs.getString("PRODUCT_NAME");
-		int prodQty = rs.getInt("PRODUCT_QTY");
-		BigDecimal prodPrice = rs.getBigDecimal("PRODUCT_PRICE");
-		
-		int orderItemQty = rs.getInt("ORDERITEM_QTY");
-		int orderItemProdId = rs.getInt("ORDERITEM_PRODUCT");
-		int orderId = rs.getInt("ORDER_ID");
-		
-		Product product = new Product(prodId, prodName, prodQty, prodPrice);
-		Order order = new Order(orderId);
-		OrderItem orderItem = new OrderItem(order, product, orderItemQty);
-		
-		return orderItem;
-	}
-	
-	private Order mapRowIntoOrder(ResultSet rs) throws SQLException {
-		List<OrderItem> orderItemList = new ArrayList<OrderItem>();
-		int orderId = rs.getInt("ORDER_ID");
-		Date orderDate = new java.util.Date(rs.getDate("ORDER_DATE").getTime());
-		BigDecimal orderPrice = rs.getBigDecimal("ORDER_PRICE");
-		boolean orderStatus = Boolean.FALSE ? (rs.getString("ORDER_STATUS")
-				.equals("UNPAID")) : Boolean.TRUE;
-		int custId = rs.getInt("CUSTOMER_ID");
-		
-		Customer customer = new Customer(custId);
-		
-		orderItemList.add(mapRowOrderItem(rs));
-		
-		Order order = new Order(orderId, customer, orderDate, orderPrice,
-				orderStatus, orderItemList);
-		
-		return order;
-	}
 	
 	@Override
 	public List<Order> getAll() throws DAOException {
 		List<Order> allOrders = new ArrayList<Order>();
-		List<OrderItem> tempList = new ArrayList<OrderItem>();
-		Order order = null;
+		List<OrderItem> orderItemList = new ArrayList<OrderItem>();
+		int id = 1;
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -79,24 +43,43 @@ public class DAOOrderJdbcImpl extends Connections implements DAOOrder {
 			pstmt = conn.prepareStatement(FINDALL_STMT,
 					PreparedStatement.RETURN_GENERATED_KEYS);
 			rs = pstmt.executeQuery(FINDALL_STMT);
+			
 			while (rs.next()) {
-				if(allOrders.contains(mapRowIntoOrder(rs).getOrderID())){
-					tempList.add(mapRowOrderItem(rs));
+				int orderId = rs.getInt("ORDER_ID");
+				Date orderDate = new java.util.Date(rs.getDate("ORDER_DATE").getTime());
+				BigDecimal orderPrice = rs.getBigDecimal("ORDER_PRICE");
+				boolean orderStatus = Boolean.FALSE ? (rs.getString("ORDER_STATUS")
+						.equals("UNPAID")) : Boolean.TRUE;
+				int orderCustId = rs.getInt("ORDER_CUSTOMER");
+				
+				int custId = rs.getInt("CUSTOMER_ID");
+				String custName = rs.getString("CUSTOMER_NAME");
+				
+				int orderItemQty = rs.getInt("ORDERITEM_QTY");
+				int orderItemProdId = rs.getInt("ORDERITEM_PRODUCT");
+				int orderItemOrderId = rs.getInt("ORDERITEM_ORDERID");
+				BigDecimal orderItemPrice = rs.getBigDecimal("ORDERITEM_PRICE");
+				
+				int productId = rs.getInt("PRODUCT_ID");
+				String productName = rs.getString("PRODUCT_NAME");
+				int productQty = rs.getInt("PRODUCT_QTY");
+				BigDecimal productPrice = rs.getBigDecimal("PRODUCT_PRICE");
+				
+				Product product = new Product(productId, productName, productQty, productPrice);
+				Customer customer = new Customer(custId, custName);
+				Order order = new Order(orderId, customer, orderDate, orderPrice, orderStatus, orderItemList);
+				OrderItem orderItem = new OrderItem(order, product, orderItemQty, orderItemPrice);
+				
+				if(orderId == id){
+					orderItemList.add(orderItem);
+					order.setOrderItemList(orderItemList);
 				} else {
-					tempList.clear();
-					order = mapRowIntoOrder(rs);
-					if(allOrders.isEmpty()){
-						allOrders.add(order);
-					}
-					//order = mapRowIntoOrder(rs);
-					tempList.add(mapRowOrderItem(rs));
-					order.setOrderItemList(tempList);
+					id = orderId;
+					orderItemList.clear();
+					orderItemList.add(orderItem);
+					order.setOrderItemList(orderItemList);
+					allOrders.add(order);
 				}
-				
-				//order.setOrderItemList(orderItemList);
-				//order = mapRowIntoOrder(rs);
-				
-				allOrders.add(order);
 			}
 
 		} catch (SQLException e) {
@@ -129,12 +112,12 @@ public class DAOOrderJdbcImpl extends Connections implements DAOOrder {
 			pstmt.setInt(1, id);
 			rs = pstmt.executeQuery();
 			tempList.clear();
-			if (rs.next()) {
-				order = mapRowIntoOrder(rs);
-				if(order.getOrderID() == mapRowIntoOrder(rs).getOrderID()){
-					tempList.add(mapRowOrderItem(rs));
-				}
-			}
+//			if (rs.next()) {
+//				order = mapRowIntoOrder(rs);
+//				if(order.getOrderID() == mapRowIntoOrder(rs).getOrderID()){
+//					tempList.add(mapRowIntoOrderItem(rs));
+//				}
+//			}
 		
 			order.setOrderItemList(tempList);
 
@@ -155,7 +138,19 @@ public class DAOOrderJdbcImpl extends Connections implements DAOOrder {
 
 	@Override
 	public void delete(Order o) throws DAOException {
-		// TODO Auto-generated method stub
-
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(DELETE_STMT);
+			pstmt.setInt(1, o.getOrderID());
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		} finally {
+			closeResources(null, pstmt, conn);
+		}
 	}
 }

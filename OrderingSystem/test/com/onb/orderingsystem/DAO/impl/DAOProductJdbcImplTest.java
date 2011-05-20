@@ -20,7 +20,7 @@ public class DAOProductJdbcImplTest {
 	private DAOProduct daoProduct = new DAOProductJdbcImpl();
 	
 	@Test
-	public void testCreateAndGetAll() throws DAOException{
+	public void testGetAll() throws DAOException{
 		List<Product> initialList = daoProduct.getAll();
 		Product prod = new Product(1, "iPhone 4", 500, new BigDecimal("43259.00"));
 		assertEquals(1, prod.getProductID());
